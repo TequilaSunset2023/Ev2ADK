@@ -45,7 +45,7 @@ bicep_digest_extract_agent = LlmAgent(
     ),
     instruction=(
         """
-        You are a helpful assistant who use .
+        You are a helpful assistant who use tools to extract digest of a Bicep file.
         Your response must be pure kusto query text wrapped with json format, 
         it means a valid kusto query which can be executed directly in Azure Monitor.
         Your response MUST be a raw json which can be deserialized directly, Do not use markdown marks like ```json, 
