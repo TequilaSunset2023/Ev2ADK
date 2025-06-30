@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vulnerabilityAssessments_Default_storageContainerPath": {
+            "value": null
+        },
+        "servers_bigdataefficiency_shared_name": {
+            "value": null
+        },
+        "Clusters_bigdataefficiencystage_name": {
+            "value": null
+        },
+        "storageAccounts_streamviewerstaging_name": {
+            "value": null
+        },
+        "networkSecurityPerimeters_nsp_cosman_staging_name": {
+            "value": null
+        },
+        "userAssignedIdentities_MI_IOE_staging_name": {
+            "value": null
+        },
+        "Clusters_resourcemanagement_externalid": {
+            "value": null
+        }
+    }
+}

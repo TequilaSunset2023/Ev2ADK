@@ -1,0 +1,3608 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vulnerabilityAssessments_Default_storageContainerPath": {
+            "type": "SecureString"
+        },
+        "servers_bigdataefficiency_shared_name": {
+            "defaultValue": "bigdataefficiency-shared",
+            "type": "String"
+        },
+        "Clusters_bigdataefficiencystage_name": {
+            "defaultValue": "bigdataefficiencystage",
+            "type": "String"
+        },
+        "storageAccounts_streamviewerstaging_name": {
+            "defaultValue": "streamviewerstaging",
+            "type": "String"
+        },
+        "networkSecurityPerimeters_nsp_cosman_staging_name": {
+            "defaultValue": "nsp-cosman-staging",
+            "type": "String"
+        },
+        "userAssignedIdentities_MI_IOE_staging_name": {
+            "defaultValue": "MI-IOE-staging",
+            "type": "String"
+        },
+        "Clusters_resourcemanagement_externalid": {
+            "defaultValue": "/subscriptions/c0636422-8158-45fd-98fd-fa8010bdde8a/resourceGroups/Prod/providers/Microsoft.Kusto/Clusters/resourcemanagement",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Kusto/Clusters",
+            "apiVersion": "2024-04-13",
+            "name": "[parameters('Clusters_bigdataefficiencystage_name')]",
+            "location": "West US 2",
+            "tags": {
+                "NRMS.KustoPlatform.Classification.1P": "Corp"
+            },
+            "sku": {
+                "name": "Standard_L8as_v3",
+                "tier": "Standard",
+                "capacity": 2
+            },
+            "zones": [
+                "1",
+                "3",
+                "2"
+            ],
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "trustedExternalTenants": [],
+                "optimizedAutoscale": {
+                    "version": 1,
+                    "isEnabled": false,
+                    "minimum": 2,
+                    "maximum": 3
+                },
+                "enableDiskEncryption": false,
+                "enableStreamingIngest": false,
+                "languageExtensions": {
+                    "value": [
+                        {
+                            "languageExtensionName": "PYTHON",
+                            "languageExtensionImageName": "Python3_11_7"
+                        }
+                    ]
+                },
+                "enablePurge": true,
+                "enableDoubleEncryption": false,
+                "engineType": "V3",
+                "acceptedAudiences": [],
+                "restrictOutboundNetworkAccess": "Disabled",
+                "allowedFqdnList": [],
+                "publicNetworkAccess": "Enabled",
+                "allowedIpRangeList": [],
+                "enableAutoStop": true,
+                "publicIPType": "IPv4"
+            }
+        },
+        {
+            "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+            "apiVersion": "2025-01-31-preview",
+            "name": "[parameters('userAssignedIdentities_MI_IOE_staging_name')]",
+            "location": "westus2"
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityPerimeters",
+            "apiVersion": "2024-06-01-preview",
+            "name": "[parameters('networkSecurityPerimeters_nsp_cosman_staging_name')]",
+            "location": "westus2",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[parameters('servers_bigdataefficiency_shared_name')]",
+            "location": "westus2",
+            "tags": {
+                "NRMS.NetIsoLevel": "Level2"
+            },
+            "kind": "v12.0",
+            "properties": {
+                "administratorLogin": "SuperAdmin",
+                "version": "12.0",
+                "minimalTlsVersion": "None",
+                "publicNetworkAccess": "Enabled",
+                "administrators": {
+                    "administratorType": "ActiveDirectory",
+                    "principalType": "Group",
+                    "login": "CosmanDBA-Reader",
+                    "sid": "fdb1f382-eaf0-4b5b-abf7-787930e90dab",
+                    "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2",
+                    "azureADOnlyAuthentication": true
+                },
+                "restrictOutboundNetworkAccess": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2024-01-01",
+            "name": "[parameters('storageAccounts_streamviewerstaging_name')]",
+            "location": "westus2",
+            "tags": {
+                "Owner": "cosmandev"
+            },
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "dnsEndpointType": "Standard",
+                "defaultToOAuthAuthentication": false,
+                "publicNetworkAccess": "Enabled",
+                "allowCrossTenantReplication": false,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "allowSharedKeyAccess": false,
+                "largeFileSharesState": "Enabled",
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "requireInfrastructureEncryption": false,
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/AttachedDatabaseConfigurations",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-Shared')]",
+            "location": "West US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "clusterResourceId": "[parameters('Clusters_resourcemanagement_externalid')]",
+                "databaseName": "share",
+                "defaultPrincipalsModificationKind": "Union",
+                "tableLevelSharingProperties": {
+                    "tablesToInclude": [
+                        "ScopeRecurringJobSuggestions",
+                        "ScopeJobRecommendations"
+                    ],
+                    "tablesToExclude": [],
+                    "externalTablesToInclude": [],
+                    "externalTablesToExclude": [
+                        "*"
+                    ],
+                    "materializedViewsToInclude": [],
+                    "materializedViewsToExclude": [
+                        "*"
+                    ],
+                    "functionsToInclude": [],
+                    "functionsToExclude": []
+                },
+                "databaseNameOverride": "rm-shared"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev')]",
+            "location": "West US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "kind": "ReadWrite"
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared')]",
+            "location": "West US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "kind": "ReadWrite"
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/ODLSchemas')]",
+            "location": "West US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "kind": "ReadWrite"
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared')]",
+            "location": "West US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "kind": "ReadOnlyFollowing"
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging')]",
+            "location": "West US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "kind": "ReadWrite"
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared')]",
+            "location": "West US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "kind": "ReadWrite"
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/0567f5dd-c3f0-40cb-ac36-b6f8fc79e0e5')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "730253c3-e114-4eee-ac4e-6d35428dae0f",
+                "role": "AllDatabasesViewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/219d1fd6-b3cb-4ac0-973e-c07c515d8628')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "0eedee66-120a-40c7-b650-89623a3c600f",
+                "role": "AllDatabasesViewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/4e98e327-38b4-48c2-a49c-7a372549836d')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "a3b7a5e1-0e5d-4a43-870c-15c2290388a4",
+                "role": "AllDatabasesAdmin",
+                "principalType": "Group",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/5fd983ff-6592-462d-b70a-57ae6fb0eb3d')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "adacc596-a3b8-494a-a55e-bf0f9a80978a",
+                "role": "AllDatabasesMonitor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/8dcba762-c57d-491f-ac56-0456a8bc0fba')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "d602b941-d532-4ac4-846b-25be8c5f3f09",
+                "role": "AllDatabasesAdmin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/9a402b40-83d5-482d-9fdb-a640d3407a84')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "6bd4b0e6-2fd3-4a55-8bf7-a93d0bcd17d4",
+                "role": "AllDatabasesAdmin",
+                "principalType": "Group",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/a0780df6-6557-439b-ae7e-b66f17c289d5')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "a3b7a5e1-0e5d-4a43-870c-15c2290388a4",
+                "role": "AllDatabasesViewer",
+                "principalType": "Group",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/c62e0727-7223-48a8-8223-d092146e85c4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "730253c3-e114-4eee-ac4e-6d35428dae0f",
+                "role": "AllDatabasesAdmin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/c8cbac1f-297c-4423-9fd2-c1e55b0c32b0')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "71d5afd6-37e2-46bf-8309-f4ba2fc67d70",
+                "role": "AllDatabasesViewer",
+                "principalType": "Group",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/d92aba3c-f969-40f3-9797-d58021e8586c')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "e31aaa9a-c0ad-42c5-861f-4d433d9859d5",
+                "role": "AllDatabasesAdmin",
+                "principalType": "User",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/DataMap Agent 001')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "da3419cc-2455-4136-a912-2a566e6bf74a",
+                "role": "AllDatabasesViewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/eea7461d-f18d-4113-8b71-46d5c4f09566')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "6d82c7d1-3616-4dfc-8e0e-5a2ee3f505a4",
+                "role": "AllDatabasesViewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/f5d6f288-3157-449c-a989-b809cda118c9')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "24a067bd-67b8-47d3-9b2f-6e022c8beb22",
+                "role": "AllDatabasesAdmin",
+                "principalType": "User",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/privateEndpointConnections",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/exportkustotoparquet.AzureDataExplorer480-81d720c5-8129-47f2-9e51-9455578c84c3')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "privateLinkServiceConnectionState": {
+                    "status": "Rejected",
+                    "description": "Requested by DataFactory:ExportKustoToParquet, Name:AzureDataExplorer480"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityPerimeters/profiles",
+            "apiVersion": "2024-06-01-preview",
+            "name": "[concat(parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), '/defaultProfile')]",
+            "location": "westus2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Sql/servers/administrators",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/ActiveDirectory')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "administratorType": "ActiveDirectory",
+                "login": "CosmanDBA-Reader",
+                "sid": "fdb1f382-eaf0-4b5b-abf7-787930e90dab",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advancedThreatProtectionSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/CreateIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/DbParameterization')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/DefragmentIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/DropIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/ForceLastGoodPlan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/auditingPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Default')]",
+            "location": "West US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "auditingState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/auditingSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "auditActionsAndGroups": [],
+                "isStorageSecondaryKeyInUse": false,
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/azureADOnlyAuthentications",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "azureADOnlyAuthentication": true
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/connectionPolicies",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/default')]",
+            "location": "westus2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "connectionType": "Default"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev')]",
+            "location": "westus2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "sku": {
+                "name": "GP_Gen5",
+                "tier": "GeneralPurpose",
+                "family": "Gen5",
+                "capacity": 32
+            },
+            "kind": "v12.0,user,vcore",
+            "properties": {
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "maxSizeBytes": 2199023255552,
+                "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+                "zoneRedundant": false,
+                "licenseType": "LicenseIncluded",
+                "readScale": "Disabled",
+                "requestedBackupStorageRedundancy": "Geo",
+                "maintenanceConfigurationId": "/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default",
+                "isLedgerOn": false,
+                "availabilityZone": "NoPreference"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging')]",
+            "location": "westus2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "tags": {
+                "Owner": "cosmandev"
+            },
+            "sku": {
+                "name": "GP_Gen5",
+                "tier": "GeneralPurpose",
+                "family": "Gen5",
+                "capacity": 80
+            },
+            "kind": "v12.0,user,vcore",
+            "properties": {
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "maxSizeBytes": 4398046511104,
+                "catalogCollation": "SQL_Latin1_General_CP1_CI_AS",
+                "zoneRedundant": false,
+                "licenseType": "LicenseIncluded",
+                "readScale": "Disabled",
+                "requestedBackupStorageRedundancy": "Geo",
+                "maintenanceConfigurationId": "/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default",
+                "isLedgerOn": false,
+                "availabilityZone": "NoPreference"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advancedThreatProtectionSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/master/Default')]",
+            "location": "West US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "auditingState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/ledgerDigestUploads",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/master/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/securityAlertPolicies",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/master/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/master/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "recurringScans": {
+                    "isEnabled": false,
+                    "emailSubscriptionAdmins": true
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/devOpsAuditingSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/encryptionProtector",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "kind": "servicemanaged",
+            "properties": {
+                "serverKeyName": "ServiceManaged",
+                "serverKeyType": "ServiceManaged",
+                "autoRotationEnabled": false
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/extendedAuditingSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "auditActionsAndGroups": [],
+                "isStorageSecondaryKeyInUse": false,
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/AllowAllWindowsAzureIps')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "0.0.0.0"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Corpnet_1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "167.220.0.0",
+                "endIpAddress": "167.220.255.255"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Corpnet_2')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "131.107.0.0",
+                "endIpAddress": "131.107.255.255"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Corpnet_3')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "67.160.205.0",
+                "endIpAddress": "67.160.205.255"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Corpnet_4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "115.96.0.0",
+                "endIpAddress": "115.96.255.255"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Corpnet_5')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "20.247.0.0",
+                "endIpAddress": "20.247.255.255"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/query-editor-129af7')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "157.58.216.96",
+                "endIpAddress": "157.58.216.96"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/query-editor-8443d9')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "157.58.216.99",
+                "endIpAddress": "157.58.216.99"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/query-editor-da29c9')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "157.58.216.97",
+                "endIpAddress": "157.58.216.97"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/firewallRules",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/query-editor-f15da4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "startIpAddress": "157.58.216.98",
+                "endIpAddress": "157.58.216.98"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/securityAlertPolicies",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/sqlVulnerabilityAssessments",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "recurringScans": {
+                    "isEnabled": false,
+                    "emailSubscriptionAdmins": true
+                },
+                "storageContainerPath": "[parameters('vulnerabilityAssessments_Default_storageContainerPath')]"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "containerDeleteRetentionPolicy": {
+                    "enabled": true,
+                    "days": 7
+                },
+                "cors": {
+                    "corsRules": []
+                },
+                "deleteRetentionPolicy": {
+                    "allowPermanentDelete": false,
+                    "enabled": true,
+                    "days": 7
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/fileServices",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "protocolSettings": {
+                    "smb": {}
+                },
+                "cors": {
+                    "corsRules": []
+                },
+                "shareDeleteRetentionPolicy": {
+                    "enabled": true,
+                    "days": 7
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/00010355-2cc8-47ec-b43a-839e69ce8ed4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "1f3b18c3-d879-4c2f-b317-0ac7d9a01c10",
+                "role": "Monitor",
+                "principalType": "App"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/02e5be07-54be-4488-8a06-77a67ed202ec')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "70c65d54-38c1-4dd3-88de-9b8a47e0fbb9",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/033b4bf3-be9e-4a28-83ed-0e0c52de18e8')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "7b9a63d8-1948-492e-8b19-00e35ec5893e",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/035e04bc-1e26-450e-8101-b72138392560')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "f3a3640a-fe9f-4b8d-920e-01750d094477",
+                "role": "Viewer",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/04b22957-a5d1-43aa-b33f-89547fe93d8f')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "449e2283-8b64-483e-b458-938df165407c",
+                "role": "Admin",
+                "principalType": "App"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/07192a97-988c-45f5-8624-76a626d05d10')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "c1b72368-c933-4012-8305-36e78b13468c",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/071c1ee8-ab92-45a5-91cd-8e2794c14333')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "d602b941-d532-4ac4-846b-25be8c5f3f09",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/09291f16-9b03-4995-9204-1938cafa168a')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "993ddd69-4ad1-497e-8b6d-f9abca1353c0",
+                "role": "User",
+                "principalType": "Group",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/09467b1f-5404-4628-8afe-6a5d254bae04')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "4f1321cd-b9ea-473e-b9cd-b7ed18a1dcf6",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/0a518350-9394-45bc-9c91-babc6e6e3590')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "626a874c-f759-4966-84b9-98de317a2cb6",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/159e1cd0-3570-413a-8d27-97aeb562bc0a')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "70c65d54-38c1-4dd3-88de-9b8a47e0fbb9",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/15ae089d-9a0e-4f96-a140-22abd0b74c77')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "164dccc7-b0ca-4470-96aa-fe9e922556af",
+                "role": "Viewer",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/17565eee-ffdd-48dd-938e-c7693e2ee4bf')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "70c65d54-38c1-4dd3-88de-9b8a47e0fbb9",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/17c8686f-3017-48d9-ad2b-e7874d1d2f6b')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "d602b941-d532-4ac4-846b-25be8c5f3f09",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/19362f95-50cc-458d-b3b3-66e2e348bea0')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "63514a68-95f1-48c2-a39b-3cbed639e847",
+                "role": "Viewer",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/1de304f0-dc2f-412a-94d6-6b304193de55')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "626a874c-f759-4966-84b9-98de317a2cb6",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/201ed37f-8c25-4c4c-b337-6d2e606db8a6')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "a3b7a5e1-0e5d-4a43-870c-15c2290388a4",
+                "role": "Admin",
+                "principalType": "Group",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/211ab6b9-50de-440d-af9e-62092fbff913')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "49961a9f-d4bf-4cd6-be25-6610e02434d3",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/23155171-9126-42a3-95dd-9899b6ecc822')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "cb96f63f-1833-48c1-87a8-d41d7806a5df",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/2b5c12ce-754c-4d07-8bff-4f18efe03b15')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "e5197294-0efc-4c0f-ae3d-b04a0a5d9975",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/2bd8425d-92b9-4c03-8c9b-b1e0ae48feda')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "6c797385-845b-466e-835d-3ea4e8adc428",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/2c07d798-d42a-41ea-86d8-47a6c60cc012')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "70c65d54-38c1-4dd3-88de-9b8a47e0fbb9",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/2d08ca5a-1fb5-4fba-9d05-7c1ca4f1c49d')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "e5197294-0efc-4c0f-ae3d-b04a0a5d9975",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/2d45082a-5cf5-4eca-8dca-1499c5b63819')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "626a874c-f759-4966-84b9-98de317a2cb6",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/2d8fa9bf-85f0-41ff-981e-1175a840933f')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "34c7bc5c-ddf8-4a00-afc0-ebe97575212a",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/2e32d4a8-2fbe-4591-ab38-0bb5c5de250a')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "164dccc7-b0ca-4470-96aa-fe9e922556af",
+                "role": "Viewer",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/2f7e601c-86e5-47ba-a507-0c0d8eb2471c')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "c1b72368-c933-4012-8305-36e78b13468c",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/317809ed-ef7a-4260-91ec-6caa5f7d4ec8')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "c1b72368-c933-4012-8305-36e78b13468c",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/34fa511a-82f7-4d75-9d3e-e33915cc5c35')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "70c65d54-38c1-4dd3-88de-9b8a47e0fbb9",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/3624279b-1912-40e8-94fd-39ff252c4891')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "e087c9bd-428b-4100-9fae-beda63a1e1b1",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "975f013f-7f24-47e8-a7d3-abc4752bf346"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/39b9fa7f-8035-4610-b75f-bd9275845d6f')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "1f3b18c3-d879-4c2f-b317-0ac7d9a01c10",
+                "role": "Monitor",
+                "principalType": "App"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/3c228e67-05f3-4358-9136-60dc0ec467bc')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "f40d16cb-16ff-48e1-9e4d-6394a0ff011b",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/3d7de18b-eb24-4b13-8b6f-d6eb290192df')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "c1b72368-c933-4012-8305-36e78b13468c",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/3e14378d-c4f3-4804-b2be-e8fb9c2978e7')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "e5197294-0efc-4c0f-ae3d-b04a0a5d9975",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/3fd836c1-406b-49b3-9afa-1bfcb30fa4e2')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "cb96f63f-1833-48c1-87a8-d41d7806a5df",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/40ca0a78-5a1e-4b9e-b434-3ff2b079abd6')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "730253c3-e114-4eee-ac4e-6d35428dae0f",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/42a95da5-f613-4b1e-80d0-6a8366e9da86')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "c1b72368-c933-4012-8305-36e78b13468c",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/42bcecf1-f488-447f-89f6-664999192af5')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "e5197294-0efc-4c0f-ae3d-b04a0a5d9975",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/4a796c8a-d6c9-4142-a292-18215f0f13d8')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "cb96f63f-1833-48c1-87a8-d41d7806a5df",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/4bb40219-511d-4051-a1c3-08856e417174')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "34c7bc5c-ddf8-4a00-afc0-ebe97575212a",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/4cc1f06d-a7df-49b3-9c40-4821d689364c')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "34c7bc5c-ddf8-4a00-afc0-ebe97575212a",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/4fd41326-e0c0-4b61-a35b-797596c7336b')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "66c21b55-2d35-4a5c-a2a8-63f8a9b0fc53",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/5041b354-7467-4da0-8020-b99d022dd1c3')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "449e2283-8b64-483e-b458-938df165407c",
+                "role": "Admin",
+                "principalType": "App"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/506d77a2-ae0a-4147-8316-5d6948a8c1c5')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "c1b72368-c933-4012-8305-36e78b13468c",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/5114e177-cdd5-464c-9205-f7ff9da624d8')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "9c544fed-b86e-4d60-827f-0324c5cd4dde",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/53bf6d71-5f43-4933-9bb4-78535f3fbd04')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "730253c3-e114-4eee-ac4e-6d35428dae0f",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/5a8e0a1d-a6cf-4edd-8e33-35e23112b2b5')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "626a874c-f759-4966-84b9-98de317a2cb6",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/5be2bf44-19a8-4389-bcd2-5ef812164740')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "d602b941-d532-4ac4-846b-25be8c5f3f09",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/5da9f04b-3e67-48c4-ad7a-472127f04895')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "cb96f63f-1833-48c1-87a8-d41d7806a5df",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/5ec50594-c74d-41db-a50d-08088824fdb0')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "63514a68-95f1-48c2-a39b-3cbed639e847",
+                "role": "Viewer",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/6518e602-ebde-4d39-aba1-8ea520b381a3')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "6c797385-845b-466e-835d-3ea4e8adc428",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/663f7def-5bdc-4bd2-8aa1-7f0d4298fc6a')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "a3b7a5e1-0e5d-4a43-870c-15c2290388a4",
+                "role": "Admin",
+                "principalType": "Group",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/66d25330-5c3d-44ea-8a7a-3466ea965fd8')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "cb96f63f-1833-48c1-87a8-d41d7806a5df",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/671d4ff3-b996-4b6a-8401-14ce572870a2')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "626a874c-f759-4966-84b9-98de317a2cb6",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/6ad72fdb-1254-4d0c-ab9f-d22db904b534')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "626a874c-f759-4966-84b9-98de317a2cb6",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/6b3bcee6-8581-468c-8de3-9779440b7f69')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "f2325d08-d168-4a20-87c2-87a547ee0a09",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/6c0c67d0-c455-4e8a-b685-0f66afd59d8a')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "0f830cea-7057-4b09-9d4b-790a05490487",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/ODLSchemas/7370ef2e-1e5d-4060-b66b-76b276848833')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'ODLSchemas')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "4f2286b0-39e0-4305-81bd-c0ef7a826eae",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/763c47e3-21f9-47c9-a5a0-690dbea99e76')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "164dccc7-b0ca-4470-96aa-fe9e922556af",
+                "role": "Admin",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/ODLSchemas/77d91c59-f2a8-4f8a-a2d0-c331636b117c')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'ODLSchemas')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "8b211fa6-b1f3-45e2-8be3-1170a79a409f",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/7900dbee-44ef-4f36-bcf8-c05109da2831')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "cfeead70-bbcd-42b0-9e47-c20511f8bcc0",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/79f08e9c-0f45-4f0b-aa37-977943610cd7')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "66c21b55-2d35-4a5c-a2a8-63f8a9b0fc53",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/7b5eac8b-fce0-4c8c-8b25-4f4e9a3df3af')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "449e2283-8b64-483e-b458-938df165407c",
+                "role": "Admin",
+                "principalType": "App"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/7e04c076-e288-459b-90af-0909ad44a356')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "626a874c-f759-4966-84b9-98de317a2cb6",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/7e877529-4e9d-4d24-a372-9d09f65d11ba')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "626a874c-f759-4966-84b9-98de317a2cb6",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/8284266f-d6b8-4a03-8e4c-706c9bc4b38c')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "6d82c7d1-3616-4dfc-8e0e-5a2ee3f505a4",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/83dc9474-3f79-474a-b41e-9d84393b32dc')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "66c21b55-2d35-4a5c-a2a8-63f8a9b0fc53",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/8943eca9-ed3e-450c-b2e8-9dc6570c9197')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "449e2283-8b64-483e-b458-938df165407c",
+                "role": "Admin",
+                "principalType": "App"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/8a9b5696-d9a1-404e-b5ec-e25dcd8bd5ac')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "cfeead70-bbcd-42b0-9e47-c20511f8bcc0",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/8b2ec8c7-c67c-4e23-baaa-55d4e1a5a7be')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "164dccc7-b0ca-4470-96aa-fe9e922556af",
+                "role": "Admin",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/8d9565f1-83e4-428d-bc8f-ed12482472a8')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "63514a68-95f1-48c2-a39b-3cbed639e847",
+                "role": "Viewer",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/8ed784f2-5de0-476f-a43a-90a13536bb7a')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "1f3b18c3-d879-4c2f-b317-0ac7d9a01c10",
+                "role": "Monitor",
+                "principalType": "App"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/90bf7f1f-12fc-4f9c-8a5f-a596a5321ca7')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "70c65d54-38c1-4dd3-88de-9b8a47e0fbb9",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/9258b2f9-4a84-43fc-85d0-bb4efdd0ed03')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "c1b72368-c933-4012-8305-36e78b13468c",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/9636d8f0-e1e0-4047-bb0c-7d6569424434')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "c1b72368-c933-4012-8305-36e78b13468c",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/9b595787-4a33-46c9-bb51-efcdb48efc2c')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "70c65d54-38c1-4dd3-88de-9b8a47e0fbb9",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/9ba632e2-5f00-41c4-8be1-90dd4409deca')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "xiruiwei@microsoft.com",
+                "role": "Admin",
+                "principalType": "User",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/9f9a860c-5819-48ff-8759-9b1b049e8f57')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "cb96f63f-1833-48c1-87a8-d41d7806a5df",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/9fa67ca5-b80c-4b6e-b445-13b7a123b65f')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "f8e72140-aea5-4eec-a862-b392ae574d3d",
+                "role": "Admin",
+                "principalType": "User",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/a2655f5d-41da-4406-845c-bdee2cf02da9')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "164dccc7-b0ca-4470-96aa-fe9e922556af",
+                "role": "Admin",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/a9fd329c-e811-43db-9d76-0cb47b2cbde6')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "164dccc7-b0ca-4470-96aa-fe9e922556af",
+                "role": "Viewer",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/aaa40bb5-ce5e-406a-89ca-e660845f2e95')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "63514a68-95f1-48c2-a39b-3cbed639e847",
+                "role": "Viewer",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/b4de18a0-9ab2-4c7d-8b11-214908ae4d83')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "75d66c2d-cc9b-4186-8c2d-0ff26b02f1fd",
+                "role": "User",
+                "principalType": "Group",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/b4e3f54b-39d8-4663-a607-9756c7cef66c')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "9c544fed-b86e-4d60-827f-0324c5cd4dde",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/b5a66a0e-8e03-41bb-aa75-7125f5488780')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "164dccc7-b0ca-4470-96aa-fe9e922556af",
+                "role": "Viewer",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/b68afedc-e18a-45ed-abeb-e73070b199bd')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "f40d16cb-16ff-48e1-9e4d-6394a0ff011b",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/b8cf0292-6074-4f67-9511-027c7dd923fa')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "c1b72368-c933-4012-8305-36e78b13468c",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/bd60f8f7-85d8-463c-894d-661d27c32bca')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "e5197294-0efc-4c0f-ae3d-b04a0a5d9975",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/be0bb84d-ec99-4b5c-9ac5-d074a531699e')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "cb96f63f-1833-48c1-87a8-d41d7806a5df",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/bf35b061-d345-42bd-8bb6-04c5244bfd2c')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "34c7bc5c-ddf8-4a00-afc0-ebe97575212a",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/c3543788-92f9-48a8-b19b-5de2fa33dbf4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "164dccc7-b0ca-4470-96aa-fe9e922556af",
+                "role": "Admin",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/c4f33653-f102-4b99-82df-4a49f2de1189')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "a3b7a5e1-0e5d-4a43-870c-15c2290388a4",
+                "role": "Admin",
+                "principalType": "Group",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/c7d1c071-93ca-4ebb-ae77-71088fef7176')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "66c21b55-2d35-4a5c-a2a8-63f8a9b0fc53",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/c840ca2c-e9d3-4281-8759-69499e4434d6')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "cb96f63f-1833-48c1-87a8-d41d7806a5df",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/c89fd39c-a461-4ba4-9717-31ac4d25e298')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "34c7bc5c-ddf8-4a00-afc0-ebe97575212a",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/c90ec760-4b80-4891-83e5-e5976264646d')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "c8026bd9-2872-4399-aaa2-ca9ca037d837",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "975f013f-7f24-47e8-a7d3-abc4752bf346"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/c9928d1a-6a84-4b25-9baf-2a5e12785628')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "e5197294-0efc-4c0f-ae3d-b04a0a5d9975",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/ODLSchemas/c9b18716-84f7-43ba-b61f-725df18c11ab')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'ODLSchemas')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "baonguyen_jit@prdtrs01.prod.outlook.com",
+                "role": "Admin",
+                "principalType": "User",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/cd189666-625e-4612-bd60-9c45631b4dca')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "33db8b7e-c3e7-4e18-a739-816ec2cb7f87",
+                "role": "Monitor",
+                "principalType": "App"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/cdaae426-e7aa-453a-af7d-b46af57ad3c9')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "cb96f63f-1833-48c1-87a8-d41d7806a5df",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/ce16cb85-0517-4f95-a429-1f049d225fde')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "f2325d08-d168-4a20-87c2-87a547ee0a09",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/d18bac68-90dd-48b5-a887-923b7c705278')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "e5197294-0efc-4c0f-ae3d-b04a0a5d9975",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/d1954923-0620-4f64-8f83-3e076818edf4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "6d82c7d1-3616-4dfc-8e0e-5a2ee3f505a4",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/d1b2c848-ad60-4c69-a078-181af2bca1a7')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "164dccc7-b0ca-4470-96aa-fe9e922556af",
+                "role": "Viewer",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/d68bcc91-c028-4e01-bddb-f0e5c6a63d39')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "cb96f63f-1833-48c1-87a8-d41d7806a5df",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/d7ba00c7-bdd6-428b-9665-98a8c39616bb')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "0f830cea-7057-4b09-9d4b-790a05490487",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/d8d45add-a4ab-41a9-b82d-adfcf3df4b65')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "66c21b55-2d35-4a5c-a2a8-63f8a9b0fc53",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/d9c2d060-94d1-4507-8f80-20574c206da6')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": ";cdc5aeea-15c5-4db6-b079-fcadd2505dc2",
+                "role": "Viewer",
+                "principalType": "Group",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/db99bfb7-0df5-48b3-8943-95f6c11e3ee1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "e5197294-0efc-4c0f-ae3d-b04a0a5d9975",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/dc5514bb-6881-4f57-981d-50531ec29e93')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "60cc5859-3342-43ae-867b-7b7397afa975",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev-shared/dd18867a-080d-4c41-89d5-10b4f1f8f173')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "70c65d54-38c1-4dd3-88de-9b8a47e0fbb9",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging/deb2f267-6c19-4aeb-8006-c203c2fa18e8')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "a3b7a5e1-0e5d-4a43-870c-15c2290388a4",
+                "role": "Admin",
+                "principalType": "Group",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/df02d9c5-86ae-4354-a537-c2db2d1fc09f')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "66c21b55-2d35-4a5c-a2a8-63f8a9b0fc53",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/e2116981-e815-40d7-924c-ca0339bc42eb')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "de3681c1-eb95-4290-ac60-2f439a1c2c8b",
+                "role": "Monitor",
+                "principalType": "App"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/e67c632a-8229-4c6d-94c3-48df64163033')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "c1b72368-c933-4012-8305-36e78b13468c",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/ef08268d-93a8-474f-aa74-0466c8bd748f')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "f40d16cb-16ff-48e1-9e4d-6394a0ff011b",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/ef651868-43d7-45ea-8e6f-cf4d44cb14a4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "70c65d54-38c1-4dd3-88de-9b8a47e0fbb9",
+                "role": "User",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/staging-shared/efda5555-3ea5-442e-90ad-6520724ed1c1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'staging-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "626a874c-f759-4966-84b9-98de317a2cb6",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/f93ae2bc-9091-4dc5-99c2-ec0a8d234fcd')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "70c65d54-38c1-4dd3-88de-9b8a47e0fbb9",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/f9ab8606-dd76-40f7-9857-d5146b49bdd7')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "34c7bc5c-ddf8-4a00-afc0-ebe97575212a",
+                "role": "Ingestor",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/dev/fbf7e27d-f077-48fa-8772-850a6e7cc29f')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'dev')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "626a874c-f759-4966-84b9-98de317a2cb6",
+                "role": "Admin",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/feea602e-1ccd-4855-8eca-fa646ffe4ad4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "b57df2d9-17fc-4679-8d35-6b2eb0c3c0d7",
+                "role": "Viewer",
+                "principalType": "App",
+                "tenantId": "cdc5aeea-15c5-4db6-b079-fcadd2505dc2"
+            }
+        },
+        {
+            "type": "Microsoft.Kusto/Clusters/Databases/PrincipalAssignments",
+            "apiVersion": "2024-04-13",
+            "name": "[concat(parameters('Clusters_bigdataefficiencystage_name'), '/rm-shared/ff759ffa-f368-446f-9a9c-b8d5d216c050')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Kusto/Clusters/Databases', parameters('Clusters_bigdataefficiencystage_name'), 'rm-shared')]",
+                "[resourceId('Microsoft.Kusto/Clusters', parameters('Clusters_bigdataefficiencystage_name'))]"
+            ],
+            "properties": {
+                "principalId": "63514a68-95f1-48c2-a39b-3cbed639e847",
+                "role": "Viewer",
+                "principalType": "Group",
+                "tenantId": "72f988bf-86f1-41af-91ab-2d7cd011db47"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
+            "apiVersion": "2024-06-01-preview",
+            "name": "[concat(parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), '/defaultProfile/allow-access-from-subscription')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters/profiles', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), 'defaultProfile')]",
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'))]"
+            ],
+            "properties": {
+                "direction": "Inbound",
+                "addressPrefixes": [],
+                "fullyQualifiedDomainNames": [],
+                "subscriptions": [
+                    {
+                        "id": "/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e"
+                    }
+                ],
+                "emailAddresses": [],
+                "phoneNumbers": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
+            "apiVersion": "2024-06-01-preview",
+            "name": "[concat(parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), '/defaultProfile/allow-corpnet-1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters/profiles', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), 'defaultProfile')]",
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'))]"
+            ],
+            "properties": {
+                "direction": "Inbound",
+                "addressPrefixes": [
+                    "167.220.0.0/16"
+                ],
+                "fullyQualifiedDomainNames": [],
+                "subscriptions": [],
+                "emailAddresses": [],
+                "phoneNumbers": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
+            "apiVersion": "2024-06-01-preview",
+            "name": "[concat(parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), '/defaultProfile/allow-corpnet-2')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters/profiles', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), 'defaultProfile')]",
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'))]"
+            ],
+            "properties": {
+                "direction": "Inbound",
+                "addressPrefixes": [
+                    "131.107.0.0/16"
+                ],
+                "fullyQualifiedDomainNames": [],
+                "subscriptions": [],
+                "emailAddresses": [],
+                "phoneNumbers": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
+            "apiVersion": "2024-06-01-preview",
+            "name": "[concat(parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), '/defaultProfile/allow-corpnet-3')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters/profiles', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), 'defaultProfile')]",
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'))]"
+            ],
+            "properties": {
+                "direction": "Inbound",
+                "addressPrefixes": [
+                    "67.160.205.0/24"
+                ],
+                "fullyQualifiedDomainNames": [],
+                "subscriptions": [],
+                "emailAddresses": [],
+                "phoneNumbers": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityPerimeters/profiles/accessRules",
+            "apiVersion": "2024-06-01-preview",
+            "name": "[concat(parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), '/defaultProfile/allow-corpnet-4')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters/profiles', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), 'defaultProfile')]",
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'))]"
+            ],
+            "properties": {
+                "direction": "Inbound",
+                "addressPrefixes": [
+                    "115.96.0.0/16"
+                ],
+                "fullyQualifiedDomainNames": [],
+                "subscriptions": [],
+                "emailAddresses": [],
+                "phoneNumbers": []
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advancedThreatProtectionSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advancedThreatProtectionSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/CreateIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/CreateIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/DbParameterization')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/DbParameterization')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/DefragmentIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/DefragmentIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/DropIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/DropIndex')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/ForceLastGoodPlan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/advisors",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/ForceLastGoodPlan')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "autoExecuteValue": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/Default')]",
+            "location": "West US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "auditingState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingPolicies",
+            "apiVersion": "2014-04-01",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/Default')]",
+            "location": "West US 2",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "auditingState": "Disabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/auditingSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "auditActionsAndGroups": [],
+                "isStorageSecondaryKeyInUse": false,
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "weeklyRetention": "PT0S",
+                "monthlyRetention": "PT0S",
+                "yearlyRetention": "PT0S",
+                "weekOfYear": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "weeklyRetention": "PT0S",
+                "monthlyRetention": "PT0S",
+                "yearlyRetention": "PT0S",
+                "weekOfYear": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 7,
+                "diffBackupIntervalInHours": 12
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 7,
+                "diffBackupIntervalInHours": 12
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "isAzureMonitorTargetEnabled": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/extendedAuditingSettings",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "retentionDays": 0,
+                "auditActionsAndGroups": [],
+                "isStorageSecondaryKeyInUse": false,
+                "isAzureMonitorTargetEnabled": false,
+                "isManagedIdentityInUse": false,
+                "state": "Disabled",
+                "storageAccountSubscriptionId": "00000000-0000-0000-0000-000000000000"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/geoBackupPolicies",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/ledgerDigestUploads",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/ledgerDigestUploads",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/securityAlertPolicies",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/securityAlertPolicies",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Disabled",
+                "disabledAlerts": [
+                    ""
+                ],
+                "emailAddresses": [
+                    ""
+                ],
+                "emailAccountAdmins": false,
+                "retentionDays": 0
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/transparentDataEncryption",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/Current')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-dev/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-dev')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "recurringScans": {
+                    "isEnabled": false,
+                    "emailSubscriptionAdmins": true
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases/vulnerabilityAssessments",
+            "apiVersion": "2024-05-01-preview",
+            "name": "[concat(parameters('servers_bigdataefficiency_shared_name'), '/bigdataefficiency-staging/Default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers/databases', parameters('servers_bigdataefficiency_shared_name'), 'bigdataefficiency-staging')]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+            ],
+            "properties": {
+                "recurringScans": {
+                    "isEnabled": false,
+                    "emailSubscriptionAdmins": true
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default/azure-webjobs-hosts')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_streamviewerstaging_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default/azure-webjobs-secrets')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_streamviewerstaging_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default/streamcleanupschedulerstaging-applease')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_streamviewerstaging_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default/streamcleanupschedulerstaging-largemessages')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_streamviewerstaging_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default/streamcleanupschedulerstaging-leases')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_streamviewerstaging_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default/streamcleanupschedulerstaging-control-00')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccounts_streamviewerstaging_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {
+                "metadata": {}
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default/streamcleanupschedulerstaging-control-01')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccounts_streamviewerstaging_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {
+                "metadata": {}
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default/streamcleanupschedulerstaging-control-02')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccounts_streamviewerstaging_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {
+                "metadata": {}
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default/streamcleanupschedulerstaging-control-03')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccounts_streamviewerstaging_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {
+                "metadata": {}
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default/streamcleanupschedulerstaging-workitems')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccounts_streamviewerstaging_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {
+                "metadata": {}
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default/StreamCleanupSchedulerstagingHistory')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/tableServices', parameters('storageAccounts_streamviewerstaging_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+            "apiVersion": "2024-01-01",
+            "name": "[concat(parameters('storageAccounts_streamviewerstaging_name'), '/default/StreamCleanupSchedulerstagingInstances')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/tableServices', parameters('storageAccounts_streamviewerstaging_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_streamviewerstaging_name'))]"
+            ],
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityPerimeters/resourceAssociations",
+            "apiVersion": "2024-06-01-preview",
+            "name": "[concat(parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), '/bigdataefficiency-shared-4f410a19-cd10-41de-9786-554a172b16f0')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'))]",
+                "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityPerimeters/profiles', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), 'defaultProfile')]"
+            ],
+            "properties": {
+                "privateLinkResource": {
+                    "id": "[resourceId('Microsoft.Sql/servers', parameters('servers_bigdataefficiency_shared_name'))]"
+                },
+                "profile": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityPerimeters/profiles', parameters('networkSecurityPerimeters_nsp_cosman_staging_name'), 'defaultProfile')]"
+                },
+                "accessMode": "Learning"
+            }
+        }
+    ]
+}

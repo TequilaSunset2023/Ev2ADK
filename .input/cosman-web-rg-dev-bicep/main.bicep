@@ -1,0 +1,5438 @@
+param sites_cosman_dev_name string = 'cosman-dev'
+param sites_cosmanapi_dev_name string = 'cosmanapi-dev'
+param sites_cosmanapieu_dev_name string = 'cosmanapieu-dev'
+param sites_PeriodicChecker_dev_name string = 'PeriodicChecker-dev'
+param sites_cosmancoldstorageapi_dev_name string = 'cosmancoldstorageapi-dev'
+param sites_StructuredStreamReader_dev_name string = 'StructuredStreamReader-dev'
+param sites_CosmanAISearchIngestion_Dev_name string = 'CosmanAISearchIngestion-Dev'
+param sites_StorageMonitorAndReport_dev_name string = 'StorageMonitorAndReport-dev'
+param workflows_OCE_Assistant_Dev_Test_name string = 'OCE-Assistant-Dev-Test'
+param searchServices_cosman_ai_search_name string = 'cosman-ai-search'
+param storageAccounts_testforshenghao_name string = 'testforshenghao'
+param serverfarms_ASP_cosmanwebrgdev_8022_name string = 'ASP-cosmanwebrgdev-8022'
+param serverfarms_ASP_cosmanwebrgdev_83b4_name string = 'ASP-cosmanwebrgdev-83b4'
+param serverfarms_ASP_cosmanwebrgdev_9c46_name string = 'ASP-cosmanwebrgdev-9c46'
+param serverfarms_ASP_cosmanwebrgdev_bfb0_name string = 'ASP-cosmanwebrgdev-bfb0'
+param serverfarms_ASP_cosmanwebrg_IOEPlan_name string = 'ASP-cosmanwebrg-IOEPlan'
+param serverfarms_ASP_VcMonitor_staging_af11_name string = 'ASP-VcMonitor-staging-af11'
+param sites_OCE_Email_Assistance_LogicApp_Dev_name string = 'OCE-Email-Assistance-LogicApp-Dev'
+param sites_IntegratedOptimizationPlatform_Dev_name string = 'IntegratedOptimizationPlatform-Dev'
+param sites_PassiveMonitoringEventsAdvisor_dev_name string = 'PassiveMonitoringEventsAdvisor-dev'
+param virtualNetworks_CosmanNonProdVnetWus3_name string = 'CosmanNonProdVnetWus3'
+param storageAccounts_cosmanwebrgdevwestus3_name string = 'cosmanwebrgdevwestus3'
+param certificates_m365telemetry_net_cosman_dev_name string = 'm365telemetry.net-cosman-dev'
+param privateEndpoints_storage_account_wus3_blob_name string = 'storage-account-wus3-blob'
+param privateEndpoints_storage_account_wus3_blob2_name string = 'storage-account-wus3-blob2'
+param sites_IntegratedOptimizationPlatformExecutors_dev_name string = 'IntegratedOptimizationPlatformExecutors-dev'
+param namespaces_IntegratedOptimizationPlatform_Dev_name string = 'IntegratedOptimizationPlatform-Dev'
+param components_PassiveMonitoringEventsAdvisor_dev_name string = 'PassiveMonitoringEventsAdvisor-dev'
+param privateDnsZones_privatelink_blob_core_windows_net_name string = 'privatelink.blob.core.windows.net'
+param privateDnsZones_privatelink_file_core_windows_net_name string = 'privatelink.file.core.windows.net'
+param smartdetectoralertrules_failure_anomalies_cosmanapieu_dev_name string = 'failure anomalies - cosmanapieu-dev'
+param smartdetectoralertrules_failure_anomalies_passivemonitoringeventsadvisor_dev_name string = 'failure anomalies - passivemonitoringeventsadvisor-dev'
+param components_cosmanapieu_dev_externalid string = '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-web-rg-dev/providers/microsoft.insights/components/cosmanapieu-dev'
+param actiongroups_application_insights_smart_detection_externalid string = '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/actiongroups/application insights smart detection'
+param workspaces_DefaultWorkspace_595c82ed_d6b5_44fb_827a_5a55fe86dd4e_USW3_externalid string = '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/DefaultResourceGroup-USW3/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-595c82ed-d6b5-44fb-827a-5a55fe86dd4e-USW3'
+param storageAccounts_cosmanwebrgstagingwus3_externalid string = '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-web-rg-staging/providers/Microsoft.Storage/storageAccounts/cosmanwebrgstagingwus3'
+param networkSecurityGroups_NSG_CosmanNonProd_Wus3_externalid string = '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/DefaultResourceGroup-USW3/providers/Microsoft.Network/networkSecurityGroups/NSG-CosmanNonProd-Wus3'
+param serverfarms_ASP_ColdStorage_nonProd_externalid string = '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-web-rg-feature/providers/Microsoft.Web/serverfarms/ASP-ColdStorage-nonProd'
+param virtualNetworks_CosmanNonProdVnetNeu_externalid string = '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cogsinsight-web-rg-dev/providers/Microsoft.Network/virtualNetworks/CosmanNonProdVnetNeu'
+
+resource smartdetectoralertrules_failure_anomalies_cosmanapieu_dev_name_resource 'microsoft.alertsmanagement/smartdetectoralertrules@2021-04-01' = {
+  name: smartdetectoralertrules_failure_anomalies_cosmanapieu_dev_name
+  location: 'global'
+  properties: {
+    description: 'Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.'
+    state: 'Enabled'
+    severity: 'Sev3'
+    frequency: 'PT1M'
+    detector: {
+      id: 'FailureAnomaliesDetector'
+    }
+    scope: [
+      components_cosmanapieu_dev_externalid
+    ]
+    actionGroups: {
+      groupIds: [
+        actiongroups_application_insights_smart_detection_externalid
+      ]
+    }
+  }
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_resource 'Microsoft.EventHub/namespaces@2024-05-01-preview' = {
+  name: namespaces_IntegratedOptimizationPlatform_Dev_name
+  location: 'westus2'
+  sku: {
+    name: 'Standard'
+    tier: 'Standard'
+    capacity: 1
+  }
+  properties: {
+    geoDataReplication: {
+      maxReplicationLagDurationInSeconds: 0
+      locations: [
+        {
+          locationName: 'westus2'
+          roleType: 'Primary'
+        }
+      ]
+    }
+    minimumTlsVersion: '1.2'
+    publicNetworkAccess: 'Enabled'
+    disableLocalAuth: true
+    zoneRedundant: true
+    isAutoInflateEnabled: false
+    maximumThroughputUnits: 0
+    kafkaEnabled: true
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_resource 'microsoft.insights/components@2020-02-02' = {
+  name: components_PassiveMonitoringEventsAdvisor_dev_name
+  location: 'westus3'
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    Flow_Type: 'Redfield'
+    Request_Source: 'IbizaWebAppExtensionCreate'
+    RetentionInDays: 90
+    WorkspaceResourceId: workspaces_DefaultWorkspace_595c82ed_d6b5_44fb_827a_5a55fe86dd4e_USW3_externalid
+    IngestionMode: 'LogAnalytics'
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled'
+    DisableLocalAuth: true
+  }
+}
+
+resource workflows_OCE_Assistant_Dev_Test_name_resource 'Microsoft.Logic/workflows@2017-07-01' = {
+  name: workflows_OCE_Assistant_Dev_Test_name
+  location: 'westus3'
+  properties: {
+    state: 'Disabled'
+    definition: {
+      '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
+      contentVersion: '1.0.0.0'
+      parameters: {}
+      triggers: {}
+      actions: {}
+      outputs: {}
+    }
+    parameters: {}
+  }
+}
+
+resource privateDnsZones_privatelink_blob_core_windows_net_name_resource 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  name: privateDnsZones_privatelink_blob_core_windows_net_name
+  location: 'global'
+  properties: {}
+}
+
+resource privateDnsZones_privatelink_file_core_windows_net_name_resource 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  name: privateDnsZones_privatelink_file_core_windows_net_name
+  location: 'global'
+  properties: {}
+}
+
+resource virtualNetworks_CosmanNonProdVnetWus3_name_resource 'Microsoft.Network/virtualNetworks@2024-05-01' = {
+  name: virtualNetworks_CosmanNonProdVnetWus3_name
+  location: 'westus3'
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        '10.1.0.0/16'
+      ]
+    }
+    privateEndpointVNetPolicies: 'Disabled'
+    subnets: [
+      {
+        name: 'storage-account'
+        id: virtualNetworks_CosmanNonProdVnetWus3_name_storage_account.id
+        properties: {
+          addressPrefix: '10.1.1.0/24'
+          networkSecurityGroup: {
+            id: networkSecurityGroups_NSG_CosmanNonProd_Wus3_externalid
+          }
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.Storage'
+              locations: [
+                'westus3'
+                'eastus'
+              ]
+            }
+          ]
+          delegations: []
+          privateEndpointNetworkPolicies: 'Disabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+          defaultOutboundAccess: false
+        }
+        type: 'Microsoft.Network/virtualNetworks/subnets'
+      }
+      {
+        name: 'default'
+        id: virtualNetworks_CosmanNonProdVnetWus3_name_default.id
+        properties: {
+          addressPrefix: '10.1.0.0/24'
+          networkSecurityGroup: {
+            id: networkSecurityGroups_NSG_CosmanNonProd_Wus3_externalid
+          }
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.Storage'
+              locations: [
+                'westus3'
+                'eastus'
+              ]
+            }
+            {
+              service: 'Microsoft.Web'
+              locations: [
+                '*'
+              ]
+            }
+          ]
+          delegations: [
+            {
+              name: 'delegation'
+              id: '${virtualNetworks_CosmanNonProdVnetWus3_name_default.id}/delegations/delegation'
+              properties: {
+                serviceName: 'Microsoft.Web/serverfarms'
+              }
+              type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
+            }
+          ]
+          privateEndpointNetworkPolicies: 'Disabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+          defaultOutboundAccess: false
+        }
+        type: 'Microsoft.Network/virtualNetworks/subnets'
+      }
+      {
+        name: 'default2'
+        id: virtualNetworks_CosmanNonProdVnetWus3_name_default2.id
+        properties: {
+          addressPrefix: '10.1.2.0/24'
+          networkSecurityGroup: {
+            id: networkSecurityGroups_NSG_CosmanNonProd_Wus3_externalid
+          }
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.Storage'
+              locations: [
+                'westus3'
+                'eastus'
+              ]
+            }
+          ]
+          delegations: [
+            {
+              name: 'delegation'
+              id: '${virtualNetworks_CosmanNonProdVnetWus3_name_default2.id}/delegations/delegation'
+              properties: {
+                serviceName: 'Microsoft.Web/serverfarms'
+              }
+              type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
+            }
+          ]
+          privateEndpointNetworkPolicies: 'Disabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+          defaultOutboundAccess: false
+        }
+        type: 'Microsoft.Network/virtualNetworks/subnets'
+      }
+      {
+        name: 'default4'
+        id: virtualNetworks_CosmanNonProdVnetWus3_name_default4.id
+        properties: {
+          addressPrefix: '10.1.4.0/24'
+          networkSecurityGroup: {
+            id: networkSecurityGroups_NSG_CosmanNonProd_Wus3_externalid
+          }
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.Storage'
+              locations: [
+                'westus3'
+                'eastus'
+              ]
+            }
+          ]
+          delegations: [
+            {
+              name: 'delegation'
+              id: '${virtualNetworks_CosmanNonProdVnetWus3_name_default4.id}/delegations/delegation'
+              properties: {
+                serviceName: 'Microsoft.Web/serverfarms'
+              }
+              type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
+            }
+          ]
+          privateEndpointNetworkPolicies: 'Disabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+          defaultOutboundAccess: false
+        }
+        type: 'Microsoft.Network/virtualNetworks/subnets'
+      }
+      {
+        name: 'default3'
+        id: virtualNetworks_CosmanNonProdVnetWus3_name_default3.id
+        properties: {
+          addressPrefix: '10.1.3.0/24'
+          networkSecurityGroup: {
+            id: networkSecurityGroups_NSG_CosmanNonProd_Wus3_externalid
+          }
+          serviceEndpoints: [
+            {
+              service: 'Microsoft.Storage'
+              locations: [
+                'westus3'
+                'eastus'
+              ]
+            }
+          ]
+          delegations: [
+            {
+              name: 'delegation'
+              id: '${virtualNetworks_CosmanNonProdVnetWus3_name_default3.id}/delegations/delegation'
+              properties: {
+                serviceName: 'Microsoft.Web/serverfarms'
+              }
+              type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
+            }
+          ]
+          privateEndpointNetworkPolicies: 'Disabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+          defaultOutboundAccess: false
+        }
+        type: 'Microsoft.Network/virtualNetworks/subnets'
+      }
+    ]
+    virtualNetworkPeerings: []
+    enableDdosProtection: false
+  }
+}
+
+resource searchServices_cosman_ai_search_name_resource 'Microsoft.Search/searchServices@2025-02-01-preview' = {
+  name: searchServices_cosman_ai_search_name
+  location: 'West US 2'
+  sku: {
+    name: 'basic'
+  }
+  properties: {
+    replicaCount: 3
+    partitionCount: 1
+    endpoint: 'https://${searchServices_cosman_ai_search_name}.search.windows.net'
+    hostingMode: 'Default'
+    publicNetworkAccess: 'Enabled'
+    networkRuleSet: {
+      ipRules: []
+      bypass: 'None'
+    }
+    encryptionWithCmk: {
+      enforcement: 'Unspecified'
+    }
+    disableLocalAuth: true
+    disabledDataExfiltrationOptions: []
+    semanticSearch: 'free'
+  }
+}
+
+resource storageAccounts_testforshenghao_name_resource 'Microsoft.Storage/storageAccounts@2024-01-01' = {
+  name: storageAccounts_testforshenghao_name
+  location: 'westus3'
+  sku: {
+    name: 'Standard_LRS'
+    tier: 'Standard'
+  }
+  kind: 'StorageV2'
+  properties: {
+    dnsEndpointType: 'Standard'
+    defaultToOAuthAuthentication: false
+    publicNetworkAccess: 'Enabled'
+    allowCrossTenantReplication: false
+    minimumTlsVersion: 'TLS1_2'
+    allowBlobPublicAccess: false
+    allowSharedKeyAccess: false
+    largeFileSharesState: 'Enabled'
+    networkAcls: {
+      resourceAccessRules: []
+      bypass: 'AzureServices'
+      virtualNetworkRules: []
+      ipRules: [
+        {
+          value: '167.220.255.22'
+          action: 'Allow'
+        }
+      ]
+      defaultAction: 'Allow'
+    }
+    supportsHttpsTrafficOnly: true
+    encryption: {
+      requireInfrastructureEncryption: false
+      services: {
+        file: {
+          keyType: 'Account'
+          enabled: true
+        }
+        blob: {
+          keyType: 'Account'
+          enabled: true
+        }
+      }
+      keySource: 'Microsoft.Storage'
+    }
+    accessTier: 'Cool'
+  }
+}
+
+resource certificates_m365telemetry_net_cosman_dev_name_resource 'Microsoft.Web/certificates@2024-04-01' = {
+  name: certificates_m365telemetry_net_cosman_dev_name
+  location: 'West US 3'
+  properties: {
+    hostNames: [
+      'm365telemetry.net'
+    ]
+    canonicalName: 'm365telemetry.net'
+  }
+}
+
+resource serverfarms_ASP_cosmanwebrgdev_8022_name_resource 'Microsoft.Web/serverfarms@2024-04-01' = {
+  name: serverfarms_ASP_cosmanwebrgdev_8022_name
+  location: 'West US 3'
+  sku: {
+    name: 'P0v3'
+    tier: 'Premium0V3'
+    size: 'P0v3'
+    family: 'Pv3'
+    capacity: 1
+  }
+  kind: 'app'
+  properties: {
+    perSiteScaling: false
+    elasticScaleEnabled: false
+    maximumElasticWorkerCount: 1
+    isSpot: false
+    reserved: false
+    isXenon: false
+    hyperV: false
+    targetWorkerCount: 0
+    targetWorkerSizeId: 0
+    zoneRedundant: false
+  }
+}
+
+resource serverfarms_ASP_cosmanwebrgdev_83b4_name_resource 'Microsoft.Web/serverfarms@2024-04-01' = {
+  name: serverfarms_ASP_cosmanwebrgdev_83b4_name
+  location: 'North Europe'
+  sku: {
+    name: 'S1'
+    tier: 'Standard'
+    size: 'S1'
+    family: 'S'
+    capacity: 1
+  }
+  kind: 'app'
+  properties: {
+    perSiteScaling: false
+    elasticScaleEnabled: false
+    maximumElasticWorkerCount: 1
+    isSpot: false
+    reserved: false
+    isXenon: false
+    hyperV: false
+    targetWorkerCount: 0
+    targetWorkerSizeId: 0
+    zoneRedundant: false
+  }
+}
+
+resource serverfarms_ASP_cosmanwebrgdev_9c46_name_resource 'Microsoft.Web/serverfarms@2024-04-01' = {
+  name: serverfarms_ASP_cosmanwebrgdev_9c46_name
+  location: 'West US 3'
+  sku: {
+    name: 'WS1'
+    tier: 'WorkflowStandard'
+    size: 'WS1'
+    family: 'WS'
+    capacity: 1
+  }
+  kind: 'elastic'
+  properties: {
+    perSiteScaling: false
+    elasticScaleEnabled: true
+    maximumElasticWorkerCount: 20
+    isSpot: false
+    reserved: false
+    isXenon: false
+    hyperV: false
+    targetWorkerCount: 0
+    targetWorkerSizeId: 0
+    zoneRedundant: false
+  }
+}
+
+resource serverfarms_ASP_cosmanwebrgdev_bfb0_name_resource 'Microsoft.Web/serverfarms@2024-04-01' = {
+  name: serverfarms_ASP_cosmanwebrgdev_bfb0_name
+  location: 'West US 3'
+  sku: {
+    name: 'Y1'
+    tier: 'Dynamic'
+    size: 'Y1'
+    family: 'Y'
+    capacity: 0
+  }
+  kind: 'functionapp'
+  properties: {
+    perSiteScaling: false
+    elasticScaleEnabled: false
+    maximumElasticWorkerCount: 1
+    isSpot: false
+    reserved: false
+    isXenon: false
+    hyperV: false
+    targetWorkerCount: 0
+    targetWorkerSizeId: 0
+    zoneRedundant: false
+  }
+}
+
+resource serverfarms_ASP_cosmanwebrg_IOEPlan_name_resource 'Microsoft.Web/serverfarms@2024-04-01' = {
+  name: serverfarms_ASP_cosmanwebrg_IOEPlan_name
+  location: 'West US 2'
+  sku: {
+    name: 'P3v3'
+    tier: 'PremiumV3'
+    size: 'P3v3'
+    family: 'Pv3'
+    capacity: 1
+  }
+  kind: 'app'
+  properties: {
+    perSiteScaling: false
+    elasticScaleEnabled: false
+    maximumElasticWorkerCount: 1
+    isSpot: false
+    reserved: false
+    isXenon: false
+    hyperV: false
+    targetWorkerCount: 0
+    targetWorkerSizeId: 0
+    zoneRedundant: false
+  }
+}
+
+resource serverfarms_ASP_VcMonitor_staging_af11_name_resource 'Microsoft.Web/serverfarms@2024-04-01' = {
+  name: serverfarms_ASP_VcMonitor_staging_af11_name
+  location: 'West US 3'
+  sku: {
+    name: 'S1'
+    tier: 'Standard'
+    size: 'S1'
+    family: 'S'
+    capacity: 1
+  }
+  kind: 'app'
+  properties: {
+    perSiteScaling: false
+    elasticScaleEnabled: false
+    maximumElasticWorkerCount: 1
+    isSpot: false
+    reserved: false
+    isXenon: false
+    hyperV: false
+    targetWorkerCount: 0
+    targetWorkerSizeId: 0
+    zoneRedundant: false
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_resource 'Microsoft.Web/sites@2024-04-01' = {
+  name: sites_cosmancoldstorageapi_dev_name
+  location: 'West US 2'
+  tags: {
+    Owner: 'cosmandev@microsoft.com'
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'a16a1a10-a22b-4a29-92f9-96aeae2efc55'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=a16a1a10-a22b-4a29-92f9-96aeae2efc55;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=81bc4bba-c775-42a4-990e-2cc428ee11c5'
+  }
+  kind: 'app'
+  identity: {
+    type: 'SystemAssigned, UserAssigned'
+    userAssignedIdentities: {
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-CallingDownstream-M365CosmanServiceApplication-dev': {}
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-AppWithCosmanDatabaseRW-dev': {}
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-AccessExternalDatabase-M365CosmanServiceApplication-dev': {}
+      '/subscriptions/90e12bc3-39cc-4ed2-a8bc-8170144f1818/resourcegroups/cosman-default-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-SPIConnect-m365cosmanserviceapplication': {}
+    }
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: '${sites_cosmancoldstorageapi_dev_name}.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: '${sites_cosmancoldstorageapi_dev_name}.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_ColdStorage_nonProd_externalid
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: false
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: true
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 0
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource smartdetectoralertrules_failure_anomalies_passivemonitoringeventsadvisor_dev_name_resource 'microsoft.alertsmanagement/smartdetectoralertrules@2021-04-01' = {
+  name: smartdetectoralertrules_failure_anomalies_passivemonitoringeventsadvisor_dev_name
+  location: 'global'
+  properties: {
+    description: 'Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.'
+    state: 'Enabled'
+    severity: 'Sev3'
+    frequency: 'PT1M'
+    detector: {
+      id: 'FailureAnomaliesDetector'
+    }
+    scope: [
+      components_PassiveMonitoringEventsAdvisor_dev_name_resource.id
+    ]
+    actionGroups: {
+      groupIds: [
+        actiongroups_application_insights_smart_detection_externalid
+      ]
+    }
+  }
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_ListenOnly 'Microsoft.EventHub/namespaces/authorizationrules@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  name: 'ListenOnly'
+  location: 'westus2'
+  properties: {
+    rights: [
+      'Listen'
+    ]
+  }
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_RootManageSharedAccessKey 'Microsoft.EventHub/namespaces/authorizationrules@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  name: 'RootManageSharedAccessKey'
+  location: 'westus2'
+  properties: {
+    rights: [
+      'Listen'
+      'Manage'
+      'Send'
+    ]
+  }
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_SendAndListen 'Microsoft.EventHub/namespaces/authorizationrules@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  name: 'SendAndListen'
+  location: 'westus2'
+  properties: {
+    rights: [
+      'Listen'
+      'Send'
+    ]
+  }
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_other 'Microsoft.EventHub/namespaces/eventhubs@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  name: 'other'
+  location: 'westus2'
+  properties: {
+    messageTimestampDescription: {
+      timestampType: 'LogAppend'
+    }
+    retentionDescription: {
+      cleanupPolicy: 'Delete'
+      retentionTimeInHours: 24
+    }
+    messageRetentionInDays: 1
+    partitionCount: 1
+    status: 'Active'
+  }
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_parallel 'Microsoft.EventHub/namespaces/eventhubs@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  name: 'parallel'
+  location: 'westus2'
+  properties: {
+    messageTimestampDescription: {
+      timestampType: 'LogAppend'
+    }
+    retentionDescription: {
+      cleanupPolicy: 'Delete'
+      retentionTimeInHours: 24
+    }
+    messageRetentionInDays: 1
+    partitionCount: 4
+    status: 'Active'
+  }
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_serial 'Microsoft.EventHub/namespaces/eventhubs@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  name: 'serial'
+  location: 'westus2'
+  properties: {
+    messageTimestampDescription: {
+      timestampType: 'LogAppend'
+    }
+    retentionDescription: {
+      cleanupPolicy: 'Delete'
+      retentionTimeInHours: 24
+    }
+    messageRetentionInDays: 1
+    partitionCount: 1
+    status: 'Active'
+  }
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_default 'Microsoft.EventHub/namespaces/networkrulesets@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  name: 'default'
+  location: 'westus2'
+  properties: {
+    publicNetworkAccess: 'Enabled'
+    defaultAction: 'Allow'
+    virtualNetworkRules: []
+    ipRules: []
+    trustedServiceAccessEnabled: false
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_degradationindependencyduration 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'degradationindependencyduration'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'degradationindependencyduration'
+      DisplayName: 'Degradation in dependency duration'
+      Description: 'Smart Detection rules notify you of performance anomaly issues.'
+      HelpUrl: 'https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics'
+      IsHidden: false
+      IsEnabledByDefault: true
+      IsInPreview: false
+      SupportsEmailNotifications: true
+    }
+    Enabled: true
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_degradationinserverresponsetime 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'degradationinserverresponsetime'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'degradationinserverresponsetime'
+      DisplayName: 'Degradation in server response time'
+      Description: 'Smart Detection rules notify you of performance anomaly issues.'
+      HelpUrl: 'https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics'
+      IsHidden: false
+      IsEnabledByDefault: true
+      IsInPreview: false
+      SupportsEmailNotifications: true
+    }
+    Enabled: true
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_digestMailConfiguration 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'digestMailConfiguration'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'digestMailConfiguration'
+      DisplayName: 'Digest Mail Configuration'
+      Description: 'This rule describes the digest mail preferences'
+      HelpUrl: 'www.homail.com'
+      IsHidden: true
+      IsEnabledByDefault: true
+      IsInPreview: false
+      SupportsEmailNotifications: true
+    }
+    Enabled: true
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_extension_billingdatavolumedailyspikeextension 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'extension_billingdatavolumedailyspikeextension'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'extension_billingdatavolumedailyspikeextension'
+      DisplayName: 'Abnormal rise in daily data volume (preview)'
+      Description: 'This detection rule automatically analyzes the billing data generated by your application, and can warn you about an unusual increase in your application\'s billing costs'
+      HelpUrl: 'https://github.com/Microsoft/ApplicationInsights-Home/tree/master/SmartDetection/billing-data-volume-daily-spike.md'
+      IsHidden: false
+      IsEnabledByDefault: true
+      IsInPreview: true
+      SupportsEmailNotifications: false
+    }
+    Enabled: true
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_extension_canaryextension 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'extension_canaryextension'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'extension_canaryextension'
+      DisplayName: 'Canary extension'
+      Description: 'Canary extension'
+      HelpUrl: 'https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/'
+      IsHidden: true
+      IsEnabledByDefault: true
+      IsInPreview: true
+      SupportsEmailNotifications: false
+    }
+    Enabled: true
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_extension_exceptionchangeextension 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'extension_exceptionchangeextension'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'extension_exceptionchangeextension'
+      DisplayName: 'Abnormal rise in exception volume (preview)'
+      Description: 'This detection rule automatically analyzes the exceptions thrown in your application, and can warn you about unusual patterns in your exception telemetry.'
+      HelpUrl: 'https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/abnormal-rise-in-exception-volume.md'
+      IsHidden: false
+      IsEnabledByDefault: true
+      IsInPreview: true
+      SupportsEmailNotifications: false
+    }
+    Enabled: true
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_extension_memoryleakextension 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'extension_memoryleakextension'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'extension_memoryleakextension'
+      DisplayName: 'Potential memory leak detected (preview)'
+      Description: 'This detection rule automatically analyzes the memory consumption of each process in your application, and can warn you about potential memory leaks or increased memory consumption.'
+      HelpUrl: 'https://github.com/Microsoft/ApplicationInsights-Home/tree/master/SmartDetection/memory-leak.md'
+      IsHidden: false
+      IsEnabledByDefault: true
+      IsInPreview: true
+      SupportsEmailNotifications: false
+    }
+    Enabled: true
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_extension_securityextensionspackage 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'extension_securityextensionspackage'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'extension_securityextensionspackage'
+      DisplayName: 'Potential security issue detected (preview)'
+      Description: 'This detection rule automatically analyzes the telemetry generated by your application and detects potential security issues.'
+      HelpUrl: 'https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/application-security-detection-pack.md'
+      IsHidden: false
+      IsEnabledByDefault: true
+      IsInPreview: true
+      SupportsEmailNotifications: false
+    }
+    Enabled: true
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_extension_traceseveritydetector 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'extension_traceseveritydetector'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'extension_traceseveritydetector'
+      DisplayName: 'Degradation in trace severity ratio (preview)'
+      Description: 'This detection rule automatically analyzes the trace logs emitted from your application, and can warn you about unusual patterns in the severity of your trace telemetry.'
+      HelpUrl: 'https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/degradation-in-trace-severity-ratio.md'
+      IsHidden: false
+      IsEnabledByDefault: true
+      IsInPreview: true
+      SupportsEmailNotifications: false
+    }
+    Enabled: true
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_longdependencyduration 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'longdependencyduration'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'longdependencyduration'
+      DisplayName: 'Long dependency duration'
+      Description: 'Smart Detection rules notify you of performance anomaly issues.'
+      HelpUrl: 'https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics'
+      IsHidden: false
+      IsEnabledByDefault: true
+      IsInPreview: false
+      SupportsEmailNotifications: true
+    }
+    Enabled: true
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_migrationToAlertRulesCompleted 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'migrationToAlertRulesCompleted'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'migrationToAlertRulesCompleted'
+      DisplayName: 'Migration To Alert Rules Completed'
+      Description: 'A configuration that controls the migration state of Smart Detection to Smart Alerts'
+      HelpUrl: 'https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics'
+      IsHidden: true
+      IsEnabledByDefault: false
+      IsInPreview: true
+      SupportsEmailNotifications: false
+    }
+    Enabled: false
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_slowpageloadtime 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'slowpageloadtime'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'slowpageloadtime'
+      DisplayName: 'Slow page load time'
+      Description: 'Smart Detection rules notify you of performance anomaly issues.'
+      HelpUrl: 'https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics'
+      IsHidden: false
+      IsEnabledByDefault: true
+      IsInPreview: false
+      SupportsEmailNotifications: true
+    }
+    Enabled: true
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource components_PassiveMonitoringEventsAdvisor_dev_name_slowserverresponsetime 'microsoft.insights/components/ProactiveDetectionConfigs@2018-05-01-preview' = {
+  parent: components_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'slowserverresponsetime'
+  location: 'westus3'
+  properties: {
+    RuleDefinitions: {
+      Name: 'slowserverresponsetime'
+      DisplayName: 'Slow server response time'
+      Description: 'Smart Detection rules notify you of performance anomaly issues.'
+      HelpUrl: 'https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics'
+      IsHidden: false
+      IsEnabledByDefault: true
+      IsInPreview: false
+      SupportsEmailNotifications: true
+    }
+    Enabled: true
+    SendEmailsToSubscriptionOwners: true
+    CustomEmails: []
+  }
+}
+
+resource Microsoft_Network_privateDnsZones_SOA_privateDnsZones_privatelink_blob_core_windows_net_name 'Microsoft.Network/privateDnsZones/SOA@2024-06-01' = {
+  parent: privateDnsZones_privatelink_blob_core_windows_net_name_resource
+  name: '@'
+  properties: {
+    ttl: 3600
+    soaRecord: {
+      email: 'azureprivatedns-host.microsoft.com'
+      expireTime: 2419200
+      host: 'azureprivatedns.net'
+      minimumTtl: 10
+      refreshTime: 3600
+      retryTime: 300
+      serialNumber: 1
+    }
+  }
+}
+
+resource Microsoft_Network_privateDnsZones_SOA_privateDnsZones_privatelink_file_core_windows_net_name 'Microsoft.Network/privateDnsZones/SOA@2024-06-01' = {
+  parent: privateDnsZones_privatelink_file_core_windows_net_name_resource
+  name: '@'
+  properties: {
+    ttl: 3600
+    soaRecord: {
+      email: 'azureprivatedns-host.microsoft.com'
+      expireTime: 2419200
+      host: 'azureprivatedns.net'
+      minimumTtl: 10
+      refreshTime: 3600
+      retryTime: 300
+      serialNumber: 1
+    }
+  }
+}
+
+resource privateEndpoints_storage_account_wus3_blob_name_resource 'Microsoft.Network/privateEndpoints@2024-05-01' = {
+  name: privateEndpoints_storage_account_wus3_blob_name
+  location: 'westus3'
+  properties: {
+    privateLinkServiceConnections: [
+      {
+        name: privateEndpoints_storage_account_wus3_blob_name
+        id: '${privateEndpoints_storage_account_wus3_blob_name_resource.id}/privateLinkServiceConnections/${privateEndpoints_storage_account_wus3_blob_name}'
+        properties: {
+          privateLinkServiceId: storageAccounts_cosmanwebrgstagingwus3_externalid
+          groupIds: [
+            'blob'
+          ]
+          privateLinkServiceConnectionState: {
+            status: 'Disconnected'
+            description: 'Deleted state'
+            actionsRequired: 'None'
+          }
+        }
+      }
+    ]
+    manualPrivateLinkServiceConnections: []
+    customNetworkInterfaceName: '${privateEndpoints_storage_account_wus3_blob_name}-nic'
+    subnet: {
+      id: virtualNetworks_CosmanNonProdVnetWus3_name_storage_account.id
+    }
+    ipConfigurations: []
+    customDnsConfigs: []
+  }
+}
+
+resource privateEndpoints_storage_account_wus3_blob2_name_resource 'Microsoft.Network/privateEndpoints@2024-05-01' = {
+  name: privateEndpoints_storage_account_wus3_blob2_name
+  location: 'westus3'
+  properties: {
+    privateLinkServiceConnections: [
+      {
+        name: privateEndpoints_storage_account_wus3_blob2_name
+        id: '${privateEndpoints_storage_account_wus3_blob2_name_resource.id}/privateLinkServiceConnections/${privateEndpoints_storage_account_wus3_blob2_name}'
+        properties: {
+          privateLinkServiceId: storageAccounts_cosmanwebrgstagingwus3_externalid
+          groupIds: [
+            'blob_secondary'
+          ]
+          privateLinkServiceConnectionState: {
+            status: 'Disconnected'
+            description: 'Deleted state'
+            actionsRequired: 'None'
+          }
+        }
+      }
+    ]
+    manualPrivateLinkServiceConnections: []
+    customNetworkInterfaceName: '${privateEndpoints_storage_account_wus3_blob2_name}-nic'
+    subnet: {
+      id: virtualNetworks_CosmanNonProdVnetWus3_name_storage_account.id
+    }
+    ipConfigurations: []
+    customDnsConfigs: []
+  }
+}
+
+resource virtualNetworks_CosmanNonProdVnetWus3_name_default 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' = {
+  name: '${virtualNetworks_CosmanNonProdVnetWus3_name}/default'
+  properties: {
+    addressPrefix: '10.1.0.0/24'
+    networkSecurityGroup: {
+      id: networkSecurityGroups_NSG_CosmanNonProd_Wus3_externalid
+    }
+    serviceEndpoints: [
+      {
+        service: 'Microsoft.Storage'
+        locations: [
+          'westus3'
+          'eastus'
+        ]
+      }
+      {
+        service: 'Microsoft.Web'
+        locations: [
+          '*'
+        ]
+      }
+    ]
+    delegations: [
+      {
+        name: 'delegation'
+        id: '${virtualNetworks_CosmanNonProdVnetWus3_name_default.id}/delegations/delegation'
+        properties: {
+          serviceName: 'Microsoft.Web/serverfarms'
+        }
+        type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
+      }
+    ]
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+    defaultOutboundAccess: false
+  }
+  dependsOn: [
+    virtualNetworks_CosmanNonProdVnetWus3_name_resource
+  ]
+}
+
+resource virtualNetworks_CosmanNonProdVnetWus3_name_default2 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' = {
+  name: '${virtualNetworks_CosmanNonProdVnetWus3_name}/default2'
+  properties: {
+    addressPrefix: '10.1.2.0/24'
+    networkSecurityGroup: {
+      id: networkSecurityGroups_NSG_CosmanNonProd_Wus3_externalid
+    }
+    serviceEndpoints: [
+      {
+        service: 'Microsoft.Storage'
+        locations: [
+          'westus3'
+          'eastus'
+        ]
+      }
+    ]
+    delegations: [
+      {
+        name: 'delegation'
+        id: '${virtualNetworks_CosmanNonProdVnetWus3_name_default2.id}/delegations/delegation'
+        properties: {
+          serviceName: 'Microsoft.Web/serverfarms'
+        }
+        type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
+      }
+    ]
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+    defaultOutboundAccess: false
+  }
+  dependsOn: [
+    virtualNetworks_CosmanNonProdVnetWus3_name_resource
+  ]
+}
+
+resource virtualNetworks_CosmanNonProdVnetWus3_name_default3 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' = {
+  name: '${virtualNetworks_CosmanNonProdVnetWus3_name}/default3'
+  properties: {
+    addressPrefix: '10.1.3.0/24'
+    networkSecurityGroup: {
+      id: networkSecurityGroups_NSG_CosmanNonProd_Wus3_externalid
+    }
+    serviceEndpoints: [
+      {
+        service: 'Microsoft.Storage'
+        locations: [
+          'westus3'
+          'eastus'
+        ]
+      }
+    ]
+    delegations: [
+      {
+        name: 'delegation'
+        id: '${virtualNetworks_CosmanNonProdVnetWus3_name_default3.id}/delegations/delegation'
+        properties: {
+          serviceName: 'Microsoft.Web/serverfarms'
+        }
+        type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
+      }
+    ]
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+    defaultOutboundAccess: false
+  }
+  dependsOn: [
+    virtualNetworks_CosmanNonProdVnetWus3_name_resource
+  ]
+}
+
+resource virtualNetworks_CosmanNonProdVnetWus3_name_default4 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' = {
+  name: '${virtualNetworks_CosmanNonProdVnetWus3_name}/default4'
+  properties: {
+    addressPrefix: '10.1.4.0/24'
+    networkSecurityGroup: {
+      id: networkSecurityGroups_NSG_CosmanNonProd_Wus3_externalid
+    }
+    serviceEndpoints: [
+      {
+        service: 'Microsoft.Storage'
+        locations: [
+          'westus3'
+          'eastus'
+        ]
+      }
+    ]
+    delegations: [
+      {
+        name: 'delegation'
+        id: '${virtualNetworks_CosmanNonProdVnetWus3_name_default4.id}/delegations/delegation'
+        properties: {
+          serviceName: 'Microsoft.Web/serverfarms'
+        }
+        type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
+      }
+    ]
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+    defaultOutboundAccess: false
+  }
+  dependsOn: [
+    virtualNetworks_CosmanNonProdVnetWus3_name_resource
+  ]
+}
+
+resource virtualNetworks_CosmanNonProdVnetWus3_name_storage_account 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' = {
+  name: '${virtualNetworks_CosmanNonProdVnetWus3_name}/storage-account'
+  properties: {
+    addressPrefix: '10.1.1.0/24'
+    networkSecurityGroup: {
+      id: networkSecurityGroups_NSG_CosmanNonProd_Wus3_externalid
+    }
+    serviceEndpoints: [
+      {
+        service: 'Microsoft.Storage'
+        locations: [
+          'westus3'
+          'eastus'
+        ]
+      }
+    ]
+    delegations: []
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+    defaultOutboundAccess: false
+  }
+  dependsOn: [
+    virtualNetworks_CosmanNonProdVnetWus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default 'Microsoft.Storage/storageAccounts/blobServices@2024-01-01' = {
+  parent: storageAccounts_cosmanwebrgdevwestus3_name_resource
+  name: 'default'
+  sku: {
+    name: 'Standard_RAGRS'
+    tier: 'Standard'
+  }
+  properties: {
+    containerDeleteRetentionPolicy: {
+      enabled: true
+      days: 7
+    }
+    cors: {
+      corsRules: []
+    }
+    deleteRetentionPolicy: {
+      allowPermanentDelete: false
+      enabled: true
+      days: 7
+    }
+  }
+}
+
+resource storageAccounts_testforshenghao_name_default 'Microsoft.Storage/storageAccounts/blobServices@2024-01-01' = {
+  parent: storageAccounts_testforshenghao_name_resource
+  name: 'default'
+  sku: {
+    name: 'Standard_LRS'
+    tier: 'Standard'
+  }
+  properties: {
+    cors: {
+      corsRules: []
+    }
+    deleteRetentionPolicy: {
+      allowPermanentDelete: false
+      enabled: false
+    }
+  }
+}
+
+resource Microsoft_Storage_storageAccounts_fileServices_storageAccounts_cosmanwebrgdevwestus3_name_default 'Microsoft.Storage/storageAccounts/fileServices@2024-01-01' = {
+  parent: storageAccounts_cosmanwebrgdevwestus3_name_resource
+  name: 'default'
+  sku: {
+    name: 'Standard_RAGRS'
+    tier: 'Standard'
+  }
+  properties: {
+    protocolSettings: {
+      smb: {}
+    }
+    cors: {
+      corsRules: []
+    }
+    shareDeleteRetentionPolicy: {
+      enabled: true
+      days: 7
+    }
+  }
+}
+
+resource Microsoft_Storage_storageAccounts_fileServices_storageAccounts_testforshenghao_name_default 'Microsoft.Storage/storageAccounts/fileServices@2024-01-01' = {
+  parent: storageAccounts_testforshenghao_name_resource
+  name: 'default'
+  sku: {
+    name: 'Standard_LRS'
+    tier: 'Standard'
+  }
+  properties: {
+    protocolSettings: {
+      smb: {}
+    }
+    cors: {
+      corsRules: []
+    }
+    shareDeleteRetentionPolicy: {
+      enabled: true
+      days: 7
+    }
+  }
+}
+
+resource storageAccounts_testforshenghao_name_storageAccounts_testforshenghao_name_425b61c8_9f73_44ac_b74d_a7b52ca8ee1c 'Microsoft.Storage/storageAccounts/privateEndpointConnections@2024-01-01' = {
+  parent: storageAccounts_testforshenghao_name_resource
+  name: '${storageAccounts_testforshenghao_name}.425b61c8-9f73-44ac-b74d-a7b52ca8ee1c'
+  properties: {
+    privateEndpoint: {}
+    privateLinkServiceConnectionState: {
+      status: 'Approved'
+      description: 'Requested by DataFactory:ExportKustoDataWestus, Name:AzureDataLakeStorage658'
+      actionRequired: 'None'
+    }
+  }
+}
+
+resource storageAccounts_testforshenghao_name_storageAccounts_testforshenghao_name_f2462f16_5a89_4f1e_b5ec_0fbc5adb5a08 'Microsoft.Storage/storageAccounts/privateEndpointConnections@2024-01-01' = {
+  parent: storageAccounts_testforshenghao_name_resource
+  name: '${storageAccounts_testforshenghao_name}.f2462f16-5a89-4f1e-b5ec-0fbc5adb5a08'
+  properties: {
+    privateEndpoint: {}
+    privateLinkServiceConnectionState: {
+      status: 'Approved'
+      description: 'Requested by DataFactory:ExportKustoToParquet, Name:AzureDataLakeStorage718'
+      actionRequired: 'None'
+    }
+  }
+}
+
+resource Microsoft_Storage_storageAccounts_queueServices_storageAccounts_cosmanwebrgdevwestus3_name_default 'Microsoft.Storage/storageAccounts/queueServices@2024-01-01' = {
+  parent: storageAccounts_cosmanwebrgdevwestus3_name_resource
+  name: 'default'
+  properties: {
+    cors: {
+      corsRules: []
+    }
+  }
+}
+
+resource Microsoft_Storage_storageAccounts_queueServices_storageAccounts_testforshenghao_name_default 'Microsoft.Storage/storageAccounts/queueServices@2024-01-01' = {
+  parent: storageAccounts_testforshenghao_name_resource
+  name: 'default'
+  properties: {
+    cors: {
+      corsRules: []
+    }
+  }
+}
+
+resource Microsoft_Storage_storageAccounts_tableServices_storageAccounts_cosmanwebrgdevwestus3_name_default 'Microsoft.Storage/storageAccounts/tableServices@2024-01-01' = {
+  parent: storageAccounts_cosmanwebrgdevwestus3_name_resource
+  name: 'default'
+  properties: {
+    cors: {
+      corsRules: []
+    }
+  }
+}
+
+resource Microsoft_Storage_storageAccounts_tableServices_storageAccounts_testforshenghao_name_default 'Microsoft.Storage/storageAccounts/tableServices@2024-01-01' = {
+  parent: storageAccounts_testforshenghao_name_resource
+  name: 'default'
+  properties: {
+    cors: {
+      corsRules: []
+    }
+  }
+}
+
+resource sites_CosmanAISearchIngestion_Dev_name_resource 'Microsoft.Web/sites@2024-04-01' = {
+  name: sites_CosmanAISearchIngestion_Dev_name
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  kind: 'functionapp'
+  identity: {
+    type: 'SystemAssigned, UserAssigned'
+    userAssignedIdentities: {
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-CosmanCopilot-Dev': {}
+    }
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: 'cosmanaisearchingestion-dev.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: 'cosmanaisearchingestion-dev.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_cosmanwebrgdev_8022_name_resource.id
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: false
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: false
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 1536
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource sites_cosmanapi_dev_name_resource 'Microsoft.Web/sites@2024-04-01' = {
+  name: sites_cosmanapi_dev_name
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'a16a1a10-a22b-4a29-92f9-96aeae2efc55'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=a16a1a10-a22b-4a29-92f9-96aeae2efc55;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=81bc4bba-c775-42a4-990e-2cc428ee11c5'
+  }
+  kind: 'app'
+  identity: {
+    type: 'SystemAssigned, UserAssigned'
+    userAssignedIdentities: {
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-AppWithCosmanDatabaseRW-dev': {}
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-CallingDownstream-M365CosmanServiceApplication-dev': {}
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-notification-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-CosmanNotificationNonProd': {}
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-AccessExternalDatabase-M365SOTELSApp-dev': {}
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-AccessExternalDatabase-M365CosmanServiceApplication-dev': {}
+    }
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: '${sites_cosmanapi_dev_name}.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: '${sites_cosmanapi_dev_name}.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_cosmanwebrgdev_8022_name_resource.id
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: false
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: true
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 0
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource sites_cosmanapieu_dev_name_resource 'Microsoft.Web/sites@2024-04-01' = {
+  name: sites_cosmanapieu_dev_name
+  location: 'North Europe'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsEuAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'e880f97d-da40-4eb0-a91e-3ef739bbde79'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=e880f97d-da40-4eb0-a91e-3ef739bbde79;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=72f3fea5-c5b9-4459-bd47-95586dfd262b'
+  }
+  kind: 'app'
+  identity: {
+    type: 'SystemAssigned, UserAssigned'
+    userAssignedIdentities: {
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-AppWithCosmanDatabaseRW-dev': {}
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-CallingDownstream-M365CosmanServiceApplication-dev': {}
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-dev/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-CallingDownstream-M365CosmanStreamViewer-dev': {}
+    }
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: '${sites_cosmanapieu_dev_name}.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: '${sites_cosmanapieu_dev_name}.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_cosmanwebrgdev_83b4_name_resource.id
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: false
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: true
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 0
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource sites_cosman_dev_name_resource 'Microsoft.Web/sites@2024-04-01' = {
+  name: sites_cosman_dev_name
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'a16a1a10-a22b-4a29-92f9-96aeae2efc55'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=a16a1a10-a22b-4a29-92f9-96aeae2efc55;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=81bc4bba-c775-42a4-990e-2cc428ee11c5'
+  }
+  kind: 'app'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: '${sites_cosman_dev_name}.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: 'm365telemetry.net'
+        sslState: 'SniEnabled'
+        thumbprint: 'C0CF3B7894AC55CA44EC6113806DC11285B2FADF'
+        hostType: 'Standard'
+      }
+      {
+        name: '${sites_cosman_dev_name}.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_cosmanwebrgdev_8022_name_resource.id
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: false
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: true
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 0
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_resource 'Microsoft.Web/sites@2024-04-01' = {
+  name: sites_IntegratedOptimizationPlatform_Dev_name
+  location: 'West US 2'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/721d3033-7884-4d60-9353-e01fd2b34101/resourceGroups/o365rmResourceGroup/providers/microsoft.insights/components/IntegratedOptimizationPlatform-Dev'
+    'hidden-link: /app-insights-instrumentation-key': '506d267a-0642-48f3-a38a-92a5a1c7e6a3'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=506d267a-0642-48f3-a38a-92a5a1c7e6a3;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=a79acf85-6198-4438-b423-1262cf3e252d'
+  }
+  kind: 'app'
+  identity: {
+    type: 'SystemAssigned, UserAssigned'
+    userAssignedIdentities: {
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-data-rg-staging/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-IOE-staging': {}
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-staging/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-AppWithCosmanDatabaseRW-staging': {}
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-default-rg-staging/providers/Microsoft.ManagedIdentity/userAssignedIdentities/MI-AccessExternalDatabase-M365SOTELSApp-staging': {}
+    }
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: 'integratedoptimizationplatform-dev.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: 'integratedoptimizationplatform-dev.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_cosmanwebrg_IOEPlan_name_resource.id
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: false
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: true
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 0
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource sites_IntegratedOptimizationPlatformExecutors_dev_name_resource 'Microsoft.Web/sites@2024-04-01' = {
+  name: sites_IntegratedOptimizationPlatformExecutors_dev_name
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  kind: 'functionapp'
+  identity: {
+    type: 'SystemAssigned, UserAssigned'
+    userAssignedIdentities: {
+      '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourcegroups/cosman-poc/providers/Microsoft.ManagedIdentity/userAssignedIdentities/testIdentity-xinxinchen': {}
+    }
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: 'integratedoptimizationplatformexecutors-dev.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: 'integratedoptimizationplatformexecutors-dev.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_cosmanwebrgdev_8022_name_resource.id
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: false
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: false
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 1536
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource sites_PassiveMonitoringEventsAdvisor_dev_name_resource 'Microsoft.Web/sites@2024-04-01' = {
+  name: sites_PassiveMonitoringEventsAdvisor_dev_name
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-web-rg-dev/providers/Microsoft.Insights/components/PassiveMonitoringEventsAdvisor-dev'
+  }
+  kind: 'functionapp'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: 'passivemonitoringeventsadvisor-dev-aehjazhca4gca4ga.westus3-01.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: 'passivemonitoringeventsadvisor-dev-aehjazhca4gca4ga.scm.westus3-01.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_cosmanwebrgdev_8022_name_resource.id
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: false
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: false
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 1536
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    keyVaultReferenceIdentity: 'SystemAssigned'
+    autoGeneratedDomainNameLabelScope: 'TenantReuse'
+  }
+}
+
+resource sites_PeriodicChecker_dev_name_resource 'Microsoft.Web/sites@2024-04-01' = {
+  name: sites_PeriodicChecker_dev_name
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  kind: 'functionapp'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: 'periodicchecker-dev.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: 'periodicchecker-dev.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_cosmanwebrgdev_8022_name_resource.id
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: false
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: false
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 1536
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource sites_StorageMonitorAndReport_dev_name_resource 'Microsoft.Web/sites@2024-04-01' = {
+  name: sites_StorageMonitorAndReport_dev_name
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  kind: 'functionapp'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: 'storagemonitorandreport-dev.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: 'storagemonitorandreport-dev.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_cosmanwebrgdev_8022_name_resource.id
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: false
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: false
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 1536
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource sites_StructuredStreamReader_dev_name_resource 'Microsoft.Web/sites@2024-04-01' = {
+  name: sites_StructuredStreamReader_dev_name
+  location: 'North Europe'
+  tags: {
+    'hidden-related:/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-web-rg-dev/providers/Microsoft.Web/serverFarms/ASP-cosmanwebrgdev-83b4': 'empty'
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsEuAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'e880f97d-da40-4eb0-a91e-3ef739bbde79'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=e880f97d-da40-4eb0-a91e-3ef739bbde79;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=72f3fea5-c5b9-4459-bd47-95586dfd262b'
+  }
+  kind: 'functionapp'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: 'structuredstreamreader-dev.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: 'structuredstreamreader-dev.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_cosmanwebrgdev_83b4_name_resource.id
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: true
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: false
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 1536
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    virtualNetworkSubnetId: '${virtualNetworks_CosmanNonProdVnetNeu_externalid}/subnets/default'
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource sites_CosmanAISearchIngestion_Dev_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_CosmanAISearchIngestion_Dev_name_resource
+  name: 'ftp'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_cosmanapi_dev_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: 'ftp'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'a16a1a10-a22b-4a29-92f9-96aeae2efc55'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=a16a1a10-a22b-4a29-92f9-96aeae2efc55;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=81bc4bba-c775-42a4-990e-2cc428ee11c5'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_cosmanapieu_dev_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: 'ftp'
+  location: 'North Europe'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsEuAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'e880f97d-da40-4eb0-a91e-3ef739bbde79'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=e880f97d-da40-4eb0-a91e-3ef739bbde79;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=72f3fea5-c5b9-4459-bd47-95586dfd262b'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: 'ftp'
+  location: 'West US 2'
+  tags: {
+    Owner: 'cosmandev@microsoft.com'
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'a16a1a10-a22b-4a29-92f9-96aeae2efc55'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=a16a1a10-a22b-4a29-92f9-96aeae2efc55;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=81bc4bba-c775-42a4-990e-2cc428ee11c5'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_cosman_dev_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: 'ftp'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'a16a1a10-a22b-4a29-92f9-96aeae2efc55'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=a16a1a10-a22b-4a29-92f9-96aeae2efc55;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=81bc4bba-c775-42a4-990e-2cc428ee11c5'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_resource
+  name: 'ftp'
+  location: 'West US 2'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/721d3033-7884-4d60-9353-e01fd2b34101/resourceGroups/o365rmResourceGroup/providers/microsoft.insights/components/IntegratedOptimizationPlatform-Dev'
+    'hidden-link: /app-insights-instrumentation-key': '506d267a-0642-48f3-a38a-92a5a1c7e6a3'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=506d267a-0642-48f3-a38a-92a5a1c7e6a3;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=a79acf85-6198-4438-b423-1262cf3e252d'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_IntegratedOptimizationPlatformExecutors_dev_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatformExecutors_dev_name_resource
+  name: 'ftp'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_OCE_Email_Assistance_LogicApp_Dev_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_OCE_Email_Assistance_LogicApp_Dev_name_resource
+  name: 'ftp'
+  location: 'West US 3'
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_PassiveMonitoringEventsAdvisor_dev_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'ftp'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-web-rg-dev/providers/Microsoft.Insights/components/PassiveMonitoringEventsAdvisor-dev'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_PeriodicChecker_dev_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_PeriodicChecker_dev_name_resource
+  name: 'ftp'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_StorageMonitorAndReport_dev_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_StorageMonitorAndReport_dev_name_resource
+  name: 'ftp'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_StructuredStreamReader_dev_name_ftp 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_StructuredStreamReader_dev_name_resource
+  name: 'ftp'
+  location: 'North Europe'
+  tags: {
+    'hidden-related:/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-web-rg-dev/providers/Microsoft.Web/serverFarms/ASP-cosmanwebrgdev-83b4': 'empty'
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsEuAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'e880f97d-da40-4eb0-a91e-3ef739bbde79'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=e880f97d-da40-4eb0-a91e-3ef739bbde79;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=72f3fea5-c5b9-4459-bd47-95586dfd262b'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_CosmanAISearchIngestion_Dev_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_CosmanAISearchIngestion_Dev_name_resource
+  name: 'scm'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_cosmanapi_dev_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: 'scm'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'a16a1a10-a22b-4a29-92f9-96aeae2efc55'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=a16a1a10-a22b-4a29-92f9-96aeae2efc55;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=81bc4bba-c775-42a4-990e-2cc428ee11c5'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_cosmanapieu_dev_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: 'scm'
+  location: 'North Europe'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsEuAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'e880f97d-da40-4eb0-a91e-3ef739bbde79'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=e880f97d-da40-4eb0-a91e-3ef739bbde79;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=72f3fea5-c5b9-4459-bd47-95586dfd262b'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: 'scm'
+  location: 'West US 2'
+  tags: {
+    Owner: 'cosmandev@microsoft.com'
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'a16a1a10-a22b-4a29-92f9-96aeae2efc55'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=a16a1a10-a22b-4a29-92f9-96aeae2efc55;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=81bc4bba-c775-42a4-990e-2cc428ee11c5'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_cosman_dev_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: 'scm'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'a16a1a10-a22b-4a29-92f9-96aeae2efc55'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=a16a1a10-a22b-4a29-92f9-96aeae2efc55;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=81bc4bba-c775-42a4-990e-2cc428ee11c5'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_resource
+  name: 'scm'
+  location: 'West US 2'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/721d3033-7884-4d60-9353-e01fd2b34101/resourceGroups/o365rmResourceGroup/providers/microsoft.insights/components/IntegratedOptimizationPlatform-Dev'
+    'hidden-link: /app-insights-instrumentation-key': '506d267a-0642-48f3-a38a-92a5a1c7e6a3'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=506d267a-0642-48f3-a38a-92a5a1c7e6a3;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=a79acf85-6198-4438-b423-1262cf3e252d'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_IntegratedOptimizationPlatformExecutors_dev_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatformExecutors_dev_name_resource
+  name: 'scm'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_OCE_Email_Assistance_LogicApp_Dev_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_OCE_Email_Assistance_LogicApp_Dev_name_resource
+  name: 'scm'
+  location: 'West US 3'
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_PassiveMonitoringEventsAdvisor_dev_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'scm'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-web-rg-dev/providers/Microsoft.Insights/components/PassiveMonitoringEventsAdvisor-dev'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_PeriodicChecker_dev_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_PeriodicChecker_dev_name_resource
+  name: 'scm'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_StorageMonitorAndReport_dev_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_StorageMonitorAndReport_dev_name_resource
+  name: 'scm'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_StructuredStreamReader_dev_name_scm 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_StructuredStreamReader_dev_name_resource
+  name: 'scm'
+  location: 'North Europe'
+  tags: {
+    'hidden-related:/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-web-rg-dev/providers/Microsoft.Web/serverFarms/ASP-cosmanwebrgdev-83b4': 'empty'
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsEuAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'e880f97d-da40-4eb0-a91e-3ef739bbde79'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=e880f97d-da40-4eb0-a91e-3ef739bbde79;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=72f3fea5-c5b9-4459-bd47-95586dfd262b'
+  }
+  properties: {
+    allow: false
+  }
+}
+
+resource sites_CosmanAISearchIngestion_Dev_name_web 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: sites_CosmanAISearchIngestion_Dev_name_resource
+  name: 'web'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+    ]
+    netFrameworkVersion: 'v8.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'None'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetRouteAllEnabled: false
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    cors: {
+      allowedOrigins: [
+        'https://ms.portal.azure.com'
+      ]
+      supportCredentials: false
+    }
+    localMySqlEnabled: false
+    managedServiceIdentityId: 16070
+    xManagedServiceIdentityId: 16071
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'CorpNetPublic'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetPublic'
+      }
+      {
+        ipAddress: 'CorpNetSAW'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetSAW'
+      }
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictionsUseMain: true
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 0
+    functionAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+}
+
+resource sites_cosmanapi_dev_name_web 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: 'web'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'a16a1a10-a22b-4a29-92f9-96aeae2efc55'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=a16a1a10-a22b-4a29-92f9-96aeae2efc55;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=81bc4bba-c775-42a4-990e-2cc428ee11c5'
+  }
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+      'hostingstart.html'
+    ]
+    netFrameworkVersion: 'v6.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'VSTSRM'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetRouteAllEnabled: false
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    localMySqlEnabled: false
+    managedServiceIdentityId: 3318
+    xManagedServiceIdentityId: 5796
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'CorpNetPublic'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetPublic'
+      }
+      {
+        ipAddress: 'CorpNetSAW'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetSAW'
+      }
+      {
+        ipAddress: 'AzureCloud'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 101
+        name: 'Allow AzureCloud'
+        description: 'Allow AzureCloud'
+      }
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictionsUseMain: true
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 0
+    elasticWebAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+}
+
+resource sites_cosmanapieu_dev_name_web 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: 'web'
+  location: 'North Europe'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsEuAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'e880f97d-da40-4eb0-a91e-3ef739bbde79'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=e880f97d-da40-4eb0-a91e-3ef739bbde79;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=72f3fea5-c5b9-4459-bd47-95586dfd262b'
+  }
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+      'hostingstart.html'
+    ]
+    netFrameworkVersion: 'v6.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'VSTSRM'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetRouteAllEnabled: false
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    localMySqlEnabled: false
+    managedServiceIdentityId: 41644
+    xManagedServiceIdentityId: 51131
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'CorpNetPublic'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetPublic'
+      }
+      {
+        ipAddress: 'CorpNetSAW'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetSAW'
+      }
+      {
+        ipAddress: 'AzureCloud'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 101
+        name: 'Allow AzureCloud'
+        description: 'Allow AzureCloud'
+      }
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictionsUseMain: true
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 0
+    elasticWebAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_web 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: 'web'
+  location: 'West US 2'
+  tags: {
+    Owner: 'cosmandev@microsoft.com'
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'a16a1a10-a22b-4a29-92f9-96aeae2efc55'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=a16a1a10-a22b-4a29-92f9-96aeae2efc55;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=81bc4bba-c775-42a4-990e-2cc428ee11c5'
+  }
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+      'hostingstart.html'
+    ]
+    netFrameworkVersion: 'v8.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'VSTSRM'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetRouteAllEnabled: false
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    localMySqlEnabled: false
+    managedServiceIdentityId: 84790
+    xManagedServiceIdentityId: 84794
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'CorpNetPublic'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetPublic'
+      }
+      {
+        ipAddress: 'CorpNetSAW'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetSAW'
+      }
+      {
+        ipAddress: 'AzureCloud'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 101
+        name: 'Allow AzureCloud'
+        description: 'Allow AzureCloud'
+      }
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictionsUseMain: true
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 0
+    elasticWebAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+}
+
+resource sites_cosman_dev_name_web 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: 'web'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'a16a1a10-a22b-4a29-92f9-96aeae2efc55'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=a16a1a10-a22b-4a29-92f9-96aeae2efc55;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=81bc4bba-c775-42a4-990e-2cc428ee11c5'
+  }
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+      'hostingstart.html'
+    ]
+    netFrameworkVersion: 'v6.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'VSTSRM'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetRouteAllEnabled: false
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    localMySqlEnabled: false
+    managedServiceIdentityId: 3317
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'CorpNetPublic'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetPublic'
+      }
+      {
+        ipAddress: 'CorpNetSAW'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetSAW'
+      }
+      {
+        ipAddress: 'AzureCloud'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 101
+        name: 'Allow AzureCloud'
+        description: 'Allow AzureCloud'
+      }
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Allow'
+        priority: 2147483647
+        name: 'Allow all'
+        description: 'Allow all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Allow'
+    scmIpSecurityRestrictionsUseMain: true
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 0
+    elasticWebAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_web 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_resource
+  name: 'web'
+  location: 'West US 2'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/721d3033-7884-4d60-9353-e01fd2b34101/resourceGroups/o365rmResourceGroup/providers/microsoft.insights/components/IntegratedOptimizationPlatform-Dev'
+    'hidden-link: /app-insights-instrumentation-key': '506d267a-0642-48f3-a38a-92a5a1c7e6a3'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=506d267a-0642-48f3-a38a-92a5a1c7e6a3;IngestionEndpoint=https://westus2-2.in.applicationinsights.azure.com/;LiveEndpoint=https://westus2.livediagnostics.monitor.azure.com/;ApplicationId=a79acf85-6198-4438-b423-1262cf3e252d'
+  }
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+      'hostingstart.html'
+    ]
+    netFrameworkVersion: 'v6.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'VSTSRM'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetRouteAllEnabled: false
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    cors: {
+      allowedOrigins: [
+        '*'
+      ]
+      supportCredentials: false
+    }
+    localMySqlEnabled: false
+    managedServiceIdentityId: 20650
+    xManagedServiceIdentityId: 20651
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'CorpNetPublic'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetPublic'
+      }
+      {
+        ipAddress: 'CorpNetSAW'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetSAW'
+      }
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictionsUseMain: true
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 0
+    elasticWebAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+}
+
+resource sites_IntegratedOptimizationPlatformExecutors_dev_name_web 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatformExecutors_dev_name_resource
+  name: 'web'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+    ]
+    netFrameworkVersion: 'v8.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'None'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetRouteAllEnabled: false
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    cors: {
+      allowedOrigins: [
+        'https://ms.portal.azure.com'
+      ]
+      supportCredentials: false
+    }
+    localMySqlEnabled: false
+    managedServiceIdentityId: 15664
+    xManagedServiceIdentityId: 15665
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'CorpNetPublic'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetPublic'
+      }
+      {
+        ipAddress: 'CorpNetSAW'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetSAW'
+      }
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictionsUseMain: true
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 0
+    functionAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+}
+
+resource sites_OCE_Email_Assistance_LogicApp_Dev_name_web 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: sites_OCE_Email_Assistance_LogicApp_Dev_name_resource
+  name: 'web'
+  location: 'West US 3'
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+    ]
+    netFrameworkVersion: 'v6.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'None'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: false
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: false
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetName: 'cc1b619b-96ad-4166-929b-06674226add6_default2'
+    vnetRouteAllEnabled: true
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    cors: {
+      supportCredentials: false
+    }
+    localMySqlEnabled: false
+    managedServiceIdentityId: 9615
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'CorpNetPublic'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetPublic'
+      }
+      {
+        ipAddress: 'CorpNetSAW'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetSAW'
+      }
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictionsUseMain: true
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 1
+    functionAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: true
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+}
+
+resource sites_PassiveMonitoringEventsAdvisor_dev_name_web 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: sites_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: 'web'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-web-rg-dev/providers/Microsoft.Insights/components/PassiveMonitoringEventsAdvisor-dev'
+  }
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+    ]
+    netFrameworkVersion: 'v8.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'None'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetRouteAllEnabled: false
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    cors: {
+      allowedOrigins: [
+        'https://ms.portal.azure.com'
+      ]
+      supportCredentials: false
+    }
+    localMySqlEnabled: false
+    managedServiceIdentityId: 18955
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'CorpNetPublic'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetPublic'
+      }
+      {
+        ipAddress: 'CorpNetSAW'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetSAW'
+      }
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictionsUseMain: true
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 0
+    functionAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+}
+
+resource sites_PeriodicChecker_dev_name_web 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: sites_PeriodicChecker_dev_name_resource
+  name: 'web'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+    ]
+    netFrameworkVersion: 'v8.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'None'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetRouteAllEnabled: false
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    cors: {
+      allowedOrigins: [
+        'https://ms.portal.azure.com'
+      ]
+      supportCredentials: false
+    }
+    localMySqlEnabled: false
+    managedServiceIdentityId: 16080
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'CorpNetPublic'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetPublic'
+      }
+      {
+        ipAddress: 'CorpNetSAW'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetSAW'
+      }
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictionsUseMain: true
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 0
+    functionAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+}
+
+resource sites_StorageMonitorAndReport_dev_name_web 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: sites_StorageMonitorAndReport_dev_name_resource
+  name: 'web'
+  location: 'West US 3'
+  tags: {
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsAppInsights-dev'
+  }
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+    ]
+    netFrameworkVersion: 'v8.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'None'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetRouteAllEnabled: false
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    cors: {
+      allowedOrigins: [
+        'https://ms.portal.azure.com'
+      ]
+      supportCredentials: false
+    }
+    localMySqlEnabled: false
+    managedServiceIdentityId: 16087
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'CorpNetPublic'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetPublic'
+      }
+      {
+        ipAddress: 'CorpNetSAW'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetSAW'
+      }
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictionsUseMain: true
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 0
+    functionAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+}
+
+resource sites_StructuredStreamReader_dev_name_web 'Microsoft.Web/sites/config@2024-04-01' = {
+  parent: sites_StructuredStreamReader_dev_name_resource
+  name: 'web'
+  location: 'North Europe'
+  tags: {
+    'hidden-related:/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-web-rg-dev/providers/Microsoft.Web/serverFarms/ASP-cosmanwebrgdev-83b4': 'empty'
+    'hidden-link: /app-insights-resource-id': '/subscriptions/595c82ed-d6b5-44fb-827a-5a55fe86dd4e/resourceGroups/cosman-monitoring-rg-dev/providers/microsoft.insights/components/CosmanLogsEuAppInsights-dev'
+    'hidden-link: /app-insights-instrumentation-key': 'e880f97d-da40-4eb0-a91e-3ef739bbde79'
+    'hidden-link: /app-insights-conn-string': 'InstrumentationKey=e880f97d-da40-4eb0-a91e-3ef739bbde79;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=72f3fea5-c5b9-4459-bd47-95586dfd262b'
+  }
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+    ]
+    netFrameworkVersion: 'v4.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'None'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetName: 'c79620da-15bb-4938-94ee-887274013f75_default'
+    vnetRouteAllEnabled: true
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    localMySqlEnabled: false
+    managedServiceIdentityId: 48694
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'CorpNetPublic'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetPublic'
+      }
+      {
+        ipAddress: 'CorpNetSAW'
+        action: 'Allow'
+        tag: 'ServiceTag'
+        priority: 100
+        name: 'Allow CorpNetSAW'
+      }
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    ipSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Deny'
+        priority: 2147483647
+        name: 'Deny all'
+        description: 'Deny all access'
+      }
+    ]
+    scmIpSecurityRestrictionsDefaultAction: 'Deny'
+    scmIpSecurityRestrictionsUseMain: true
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 0
+    functionAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_015bef6637144a31bfb0a172d00dd1eb 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: '015bef6637144a31bfb0a172d00dd1eb'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"0b5cc6ffac232a8c3b0926eb2364d076b149adca","buildId":"26671802","buildNumber":"Release-20250625.2","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T02:24:05.0089337Z'
+    end_time: '2025-06-26T02:24:05.2279032Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapieu_dev_name_03e724c69fd74f7d92218bb14b4f1852 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: '03e724c69fd74f7d92218bb14b4f1852'
+  location: 'North Europe'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"0b5cc6ffac232a8c3b0926eb2364d076b149adca","buildId":"26671802","buildNumber":"Release-20250625.2","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T02:24:24.3953878Z'
+    end_time: '2025-06-26T02:24:24.7547691Z'
+    active: false
+  }
+}
+
+resource sites_cosman_dev_name_0fc852a4278c4b2d9acc43c0b731bb4f 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: '0fc852a4278c4b2d9acc43c0b731bb4f'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"51111adc7fa2aee6c002a1e91090e191e7eeef28","buildId":"26612508","buildNumber":"Release-20250623.3","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-24T02:20:39.0486525Z'
+    end_time: '2025-06-24T02:20:39.3924052Z'
+    active: false
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_208985271725351627577 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_resource
+  name: '208985271725351627577'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author: 'vitawang'
+    deployer: 'VSTS'
+    message: '{"type":"SlotSwap","commitId":"2ba2cd02e13fe4808816c79ebff445d0dc2c405b","buildId":"20898527","buildNumber":"20240903.2","repoProvider":"TfsGit","repoName":"SOTELS","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","sourceSlot":"staging","targetSlot":"production"}'
+    start_time: '2024-09-03T08:20:32.3691355Z'
+    end_time: '2024-09-03T08:20:32.3691355Z'
+    active: false
+  }
+}
+
+resource sites_StructuredStreamReader_dev_name_20d12d8fb2964d72a7977add01034d89 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_StructuredStreamReader_dev_name_resource
+  name: '20d12d8fb2964d72a7977add01034d89'
+  location: 'North Europe'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'ZipDeploy'
+    message: 'Created via a push deployment'
+    start_time: '2024-04-19T04:32:42.9697274Z'
+    end_time: '2024-04-19T04:32:43.3291279Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapieu_dev_name_2205af5fba284c2f8c17ed0fa777076e 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: '2205af5fba284c2f8c17ed0fa777076e'
+  location: 'North Europe'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"51111adc7fa2aee6c002a1e91090e191e7eeef28","buildId":"26612508","buildNumber":"Release-20250623.3","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-24T02:20:31.6385835Z'
+    end_time: '2025-06-24T02:20:31.9510897Z'
+    active: false
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_241a0048b75c4eaca0830716fda7e609 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: '241a0048b75c4eaca0830716fda7e609'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"25ef4ddcd6784a69dd20c6e0112558701ee587aa","buildId":"26616556","buildNumber":"Release-20250623.4","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-24T06:13:24.742737Z'
+    end_time: '2025-06-24T06:13:24.914613Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapieu_dev_name_289ea708b15e42c99d246837f9861185 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: '289ea708b15e42c99d246837f9861185'
+  location: 'North Europe'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"dd5f2dd3c12a74fc565cf3b4d142b00c9b8c7eb9","buildId":"26671634","buildNumber":"Release-20250625.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T02:16:48.7195339Z'
+    end_time: '2025-06-26T02:16:49.0320393Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapi_dev_name_2b36452d0ae145c69122962c2d0a9215 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: '2b36452d0ae145c69122962c2d0a9215'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"5f6898f43cf0a15853d29f08715e9d81a1b31367","buildId":"26617657","buildNumber":"Release-20250623.5","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-24T06:58:20.5466448Z'
+    end_time: '2025-06-24T06:58:20.9060183Z'
+    active: false
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_2c8a1562a9514d4c89cf98c944d099df 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: '2c8a1562a9514d4c89cf98c944d099df'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"ed4cd87c9d7cde606d785eb4cb3da7ae314d09b8","buildId":"26679490","buildNumber":"Release-20250626.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T09:18:46.3031403Z'
+    end_time: '2025-06-26T09:18:46.521887Z'
+    active: true
+  }
+}
+
+resource sites_cosman_dev_name_2e4ff1a250414608bfb4f58e40e0857e 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: '2e4ff1a250414608bfb4f58e40e0857e'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"dd5f2dd3c12a74fc565cf3b4d142b00c9b8c7eb9","buildId":"26671634","buildNumber":"Release-20250625.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T02:16:25.2760287Z'
+    end_time: '2025-06-26T02:16:25.7447804Z'
+    active: false
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_2e841b62ad4f41e9a67dcb9550d523b8 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: '2e841b62ad4f41e9a67dcb9550d523b8'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"5f6898f43cf0a15853d29f08715e9d81a1b31367","buildId":"26617657","buildNumber":"Release-20250623.5","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-24T06:58:11.3984357Z'
+    end_time: '2025-06-24T06:58:11.6953142Z'
+    active: false
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_2fa3ba287524426f9046cf1b65c4f5c1 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_resource
+  name: '2fa3ba287524426f9046cf1b65c4f5c1'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"0ee93dd0ba75292be5da75574876ab437541e110","buildId":"20895734","buildNumber":"20240902.2","repoProvider":"TfsGit","repoName":"SOTELS","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/SOTELS","branch":"cosman-app-dev-yaml","teamProjectName":"O365 Core","slotName":"staging"}'
+    start_time: '2024-09-03T05:45:47.8386236Z'
+    end_time: '2024-09-03T05:45:48.1198789Z'
+    active: false
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_3696fbc3412046d5bb2844a8ceb865af 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: '3696fbc3412046d5bb2844a8ceb865af'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"51ea396b962e5dd351d31291fe3cc73a1b0ecd91","buildId":"26672051","buildNumber":"Release-20250625.3","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T02:38:48.5354224Z'
+    end_time: '2025-06-26T02:38:48.7072959Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapi_dev_name_4f67b8f005fa4a9fba2b45c76a9068a7 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: '4f67b8f005fa4a9fba2b45c76a9068a7'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"51111adc7fa2aee6c002a1e91090e191e7eeef28","buildId":"26612508","buildNumber":"Release-20250623.3","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-24T02:20:39.2049024Z'
+    end_time: '2025-06-24T02:20:39.5017781Z'
+    active: false
+  }
+}
+
+resource sites_cosman_dev_name_50f0791948f845f8b4991e74c189abcb 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: '50f0791948f845f8b4991e74c189abcb'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"e8a566e8be42343fc4f23071bf9f9924035d455a","buildId":"26676256","buildNumber":"Release-20250625.4","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T06:41:06.1450701Z'
+    end_time: '2025-06-26T06:41:06.4731937Z'
+    active: false
+  }
+}
+
+resource sites_cosman_dev_name_51632a48e2d5498cb9ce9d0225bfbadc 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: '51632a48e2d5498cb9ce9d0225bfbadc'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"51ea396b962e5dd351d31291fe3cc73a1b0ecd91","buildId":"26672051","buildNumber":"Release-20250625.3","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T02:40:52.8482715Z'
+    end_time: '2025-06-26T02:40:53.1763947Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapi_dev_name_52e5bae9fe774e75ad07afb569cd119e 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: '52e5bae9fe774e75ad07afb569cd119e'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"ed4cd87c9d7cde606d785eb4cb3da7ae314d09b8","buildId":"26679490","buildNumber":"Release-20250626.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T09:18:56.5651151Z'
+    end_time: '2025-06-26T09:18:56.8619887Z'
+    active: true
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_5c68a340968e4a0089fa5b4beef7e281 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_resource
+  name: '5c68a340968e4a0089fa5b4beef7e281'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"f4bf560fff43f8821b74e2870bfb8cb26f5111a4","buildId":"21907022","releaseId":"2980640","buildNumber":"v1.0.5735.0","releaseName":"Release-186","repoProvider":"TfsGit","repoName":"SOTELS","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2024-10-31T10:27:03.8464266Z'
+    end_time: '2024-10-31T10:27:04.0651793Z'
+    active: false
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_5f13f7d52da74bd3b5960e961fcb6a68 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_resource
+  name: '5f13f7d52da74bd3b5960e961fcb6a68'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"bab9f6819aa8a5b6ffa7a428f3b224caec85c228","buildId":"21926117","buildNumber":"20241101.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"buddy-release-pipeline","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2024-11-01T08:01:09.5190247Z'
+    end_time: '2024-11-01T08:01:09.6909049Z'
+    active: false
+  }
+}
+
+resource sites_cosman_dev_name_62f7931007ac41e588f3c09e7d9d9b43 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: '62f7931007ac41e588f3c09e7d9d9b43'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"ed4cd87c9d7cde606d785eb4cb3da7ae314d09b8","buildId":"26679490","buildNumber":"Release-20250626.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T09:19:04.87795Z'
+    end_time: '2025-06-26T09:19:12.8310344Z'
+    active: true
+  }
+}
+
+resource sites_cosman_dev_name_64a09e0d9ee44965ac78b7d4a85d8c48 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: '64a09e0d9ee44965ac78b7d4a85d8c48'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"0b5cc6ffac232a8c3b0926eb2364d076b149adca","buildId":"26671802","buildNumber":"Release-20250625.2","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T02:24:13.5523028Z'
+    end_time: '2025-06-26T02:24:13.989801Z'
+    active: false
+  }
+}
+
+resource sites_StructuredStreamReader_dev_name_67d287778cbe406dbe415846d45b10d2 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_StructuredStreamReader_dev_name_resource
+  name: '67d287778cbe406dbe415846d45b10d2'
+  location: 'North Europe'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'ZipDeploy'
+    message: 'Created via a push deployment'
+    start_time: '2024-04-19T04:54:18.6433038Z'
+    end_time: '2024-04-19T04:54:19.1697804Z'
+    active: true
+  }
+}
+
+resource sites_cosmanapieu_dev_name_6e1b7d4718fa4883bcfe0d6f8ac9a59d 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: '6e1b7d4718fa4883bcfe0d6f8ac9a59d'
+  location: 'North Europe'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"9d5573ad74d42f3987d6db0f6df51896e491a12b","buildId":"26590641","buildNumber":"Release-20250623.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-23T07:54:22.0802323Z'
+    end_time: '2025-06-23T07:54:22.6746714Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapi_dev_name_71529477152f4c7bbfd4374afad68a5b 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: '71529477152f4c7bbfd4374afad68a5b'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"dd5f2dd3c12a74fc565cf3b4d142b00c9b8c7eb9","buildId":"26671634","buildNumber":"Release-20250625.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T02:16:25.7604033Z'
+    end_time: '2025-06-26T02:16:26.1666567Z'
+    active: false
+  }
+}
+
+resource sites_cosman_dev_name_78d3541756914e859577266099aeb46b 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: '78d3541756914e859577266099aeb46b'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"9d5573ad74d42f3987d6db0f6df51896e491a12b","buildId":"26590641","buildNumber":"Release-20250623.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-23T07:53:48.6361858Z'
+    end_time: '2025-06-23T07:53:48.9486873Z'
+    active: false
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_7a3d34a256cb4b05860978edd91e4b65 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: '7a3d34a256cb4b05860978edd91e4b65'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"dd5f2dd3c12a74fc565cf3b4d142b00c9b8c7eb9","buildId":"26671634","buildNumber":"Release-20250625.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T02:16:44.3666526Z'
+    end_time: '2025-06-26T02:16:44.5697794Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapi_dev_name_7cfecc4f0bee484b80f0085546b01713 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: '7cfecc4f0bee484b80f0085546b01713'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"e8a566e8be42343fc4f23071bf9f9924035d455a","buildId":"26676256","buildNumber":"Release-20250625.4","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T06:40:47.5533319Z'
+    end_time: '2025-06-26T06:40:47.8189574Z'
+    active: false
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_8824de6b0950448184716ae0d7801a80 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_resource
+  name: '8824de6b0950448184716ae0d7801a80'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"d3a4bca5f67f21d838211cddb8dc2e9ebd4292da","buildId":"21997016","buildNumber":"20241105.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2024-11-06T03:15:56.9496143Z'
+    end_time: '2024-11-06T03:15:57.1379861Z'
+    active: true
+  }
+}
+
+resource sites_cosmanapi_dev_name_90c684c6d48f4d5c9ba09e1850fe3a0d 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: '90c684c6d48f4d5c9ba09e1850fe3a0d'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"25ef4ddcd6784a69dd20c6e0112558701ee587aa","buildId":"26616556","buildNumber":"Release-20250623.4","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-24T06:13:04.7098762Z'
+    end_time: '2025-06-24T06:13:04.9911221Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapieu_dev_name_9326b207f9854362af9e389c57c0d065 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: '9326b207f9854362af9e389c57c0d065'
+  location: 'North Europe'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"25ef4ddcd6784a69dd20c6e0112558701ee587aa","buildId":"26616556","buildNumber":"Release-20250623.4","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-24T06:13:36.6803479Z'
+    end_time: '2025-06-24T06:13:37.0084777Z'
+    active: false
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_93818c4b1ef846b0947a2ee76390ce29 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_resource
+  name: '93818c4b1ef846b0947a2ee76390ce29'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"b90da123642ab1f560f3ba9994cd8ac97048b82e","buildId":"21927314","buildNumber":"20241101.2","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2024-11-01T09:09:52.9457718Z'
+    end_time: '2024-11-01T09:09:53.1331278Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapi_dev_name_96370e6018164d26afe7b2fe3862c5bd 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: '96370e6018164d26afe7b2fe3862c5bd'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"51ea396b962e5dd351d31291fe3cc73a1b0ecd91","buildId":"26672051","buildNumber":"Release-20250625.3","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T02:39:13.3552314Z'
+    end_time: '2025-06-26T02:39:13.6677397Z'
+    active: false
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_9800c60a5acb494e9ae004f0f31fb65b 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: '9800c60a5acb494e9ae004f0f31fb65b'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"9d5573ad74d42f3987d6db0f6df51896e491a12b","buildId":"26590641","buildNumber":"Release-20250623.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-23T07:53:57.5590481Z'
+    end_time: '2025-06-23T07:53:57.7621751Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapieu_dev_name_9b8a760ec46d404689ea81e032dee2d8 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: '9b8a760ec46d404689ea81e032dee2d8'
+  location: 'North Europe'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"51ea396b962e5dd351d31291fe3cc73a1b0ecd91","buildId":"26672051","buildNumber":"Release-20250625.3","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T02:39:14.8545449Z'
+    end_time: '2025-06-26T02:39:15.2764185Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapieu_dev_name_9e61651429124cd3834c61e2c4654e2e 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: '9e61651429124cd3834c61e2c4654e2e'
+  location: 'North Europe'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"5f6898f43cf0a15853d29f08715e9d81a1b31367","buildId":"26617657","buildNumber":"Release-20250623.5","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-24T06:58:16.5347949Z'
+    end_time: '2025-06-24T06:58:16.9254279Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapi_dev_name_b25285628eb0407ea424d02bf7dd14c6 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: 'b25285628eb0407ea424d02bf7dd14c6'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"9d5573ad74d42f3987d6db0f6df51896e491a12b","buildId":"26590641","buildNumber":"Release-20250623.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-23T07:53:30.1866007Z'
+    end_time: '2025-06-23T07:53:30.4678527Z'
+    active: false
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_c26d6b47516c499fbe54901015d64eb2 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: 'c26d6b47516c499fbe54901015d64eb2'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"51111adc7fa2aee6c002a1e91090e191e7eeef28","buildId":"26612508","buildNumber":"Release-20250623.3","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-24T02:20:41.5546544Z'
+    end_time: '2025-06-24T02:20:41.742695Z'
+    active: false
+  }
+}
+
+resource sites_cosman_dev_name_c316966719394f55bcd09056c3602bef 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: 'c316966719394f55bcd09056c3602bef'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"5f6898f43cf0a15853d29f08715e9d81a1b31367","buildId":"26617657","buildNumber":"Release-20250623.5","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-24T06:58:35.9016147Z'
+    end_time: '2025-06-24T06:58:36.24536Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapieu_dev_name_d1892c9049064964962d1835113a0dce 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: 'd1892c9049064964962d1835113a0dce'
+  location: 'North Europe'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"ed4cd87c9d7cde606d785eb4cb3da7ae314d09b8","buildId":"26679490","buildNumber":"Release-20250626.1","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T09:19:15.9098891Z'
+    end_time: '2025-06-26T09:19:16.2692595Z'
+    active: true
+  }
+}
+
+resource sites_cosmanapi_dev_name_d1d73b0d5bc44400b6596b3b424d79b1 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: 'd1d73b0d5bc44400b6596b3b424d79b1'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"17a2433177b97a9687ceb3108381a694fa1c8d24","buildId":"26591782","buildNumber":"Release-20250623.2","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-23T08:46:00.0118145Z'
+    end_time: '2025-06-23T08:46:00.3086863Z'
+    active: false
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_e0b1e349e8ca4a478858ae0670512de0 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: 'e0b1e349e8ca4a478858ae0670512de0'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"17a2433177b97a9687ceb3108381a694fa1c8d24","buildId":"26591782","buildNumber":"Release-20250623.2","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-23T08:45:54.9748348Z'
+    end_time: '2025-06-23T08:45:55.1623365Z'
+    active: false
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_e5fc440913974f4a8ea5d552fb5a8f8c 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: 'e5fc440913974f4a8ea5d552fb5a8f8c'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"e8a566e8be42343fc4f23071bf9f9924035d455a","buildId":"26676256","buildNumber":"Release-20250625.4","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T06:41:01.0667026Z'
+    end_time: '2025-06-26T06:41:01.2385795Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapieu_dev_name_e6a727c29b7342f9ac2855fa93ede19d 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: 'e6a727c29b7342f9ac2855fa93ede19d'
+  location: 'North Europe'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"17a2433177b97a9687ceb3108381a694fa1c8d24","buildId":"26591782","buildNumber":"Release-20250623.2","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-23T08:46:08.6431189Z'
+    end_time: '2025-06-23T08:46:09.0025015Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapieu_dev_name_ecfdf8bcb0cb4c41b407d98a8283c398 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: 'ecfdf8bcb0cb4c41b407d98a8283c398'
+  location: 'North Europe'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"e8a566e8be42343fc4f23071bf9f9924035d455a","buildId":"26676256","buildNumber":"Release-20250625.4","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T06:40:56.6357915Z'
+    end_time: '2025-06-26T06:40:57.1216078Z'
+    active: false
+  }
+}
+
+resource sites_cosmanapi_dev_name_f37d5f120fde48878a57e336d9162abc 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: 'f37d5f120fde48878a57e336d9162abc'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"0b5cc6ffac232a8c3b0926eb2364d076b149adca","buildId":"26671802","buildNumber":"Release-20250625.2","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-26T02:23:53.1919349Z'
+    end_time: '2025-06-26T02:23:53.5044347Z'
+    active: false
+  }
+}
+
+resource sites_cosman_dev_name_f4799c57c76d491fbbf2d4fedbca8991 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: 'f4799c57c76d491fbbf2d4fedbca8991'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"25ef4ddcd6784a69dd20c6e0112558701ee587aa","buildId":"26616556","buildNumber":"Release-20250623.4","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-24T06:13:47.8133859Z'
+    end_time: '2025-06-24T06:13:48.2821341Z'
+    active: false
+  }
+}
+
+resource sites_cosman_dev_name_fd925b8c500047b88f77089506d0f478 'Microsoft.Web/sites/deployments@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: 'fd925b8c500047b88f77089506d0f478'
+  location: 'West US 3'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"17a2433177b97a9687ceb3108381a694fa1c8d24","buildId":"26591782","buildNumber":"Release-20250623.2","repoProvider":"TfsGit","repoName":"Cosman","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"https://o365exchange.visualstudio.com/O365%20Core/_git/Cosman","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2025-06-23T08:45:50.1964868Z'
+    end_time: '2025-06-23T08:45:50.4621157Z'
+    active: false
+  }
+}
+
+resource sites_StructuredStreamReader_dev_name_GetStructuredStreamContent 'Microsoft.Web/sites/functions@2024-04-01' = {
+  parent: sites_StructuredStreamReader_dev_name_resource
+  name: 'GetStructuredStreamContent'
+  location: 'North Europe'
+  properties: {
+    script_href: 'https://structuredstreamreader-dev.azurewebsites.net/admin/vfs/site/wwwroot/Cosman.WebService.FunctionApp.StructuredStreamReader.exe'
+    test_data_href: 'https://structuredstreamreader-dev.azurewebsites.net/admin/vfs/data/Functions/sampledata/GetStructuredStreamContent.dat'
+    href: 'https://structuredstreamreader-dev.azurewebsites.net/admin/functions/GetStructuredStreamContent'
+    config: {
+      name: 'GetStructuredStreamContent'
+      entryPoint: 'Cosman.WebService.FunctionApp.StructuredStreamReader.GetStructuredStreamContent.Run'
+      scriptFile: 'Cosman.WebService.FunctionApp.StructuredStreamReader.exe'
+      language: 'dotnet-isolated'
+      functionDirectory: ''
+      bindings: [
+        {
+          name: 'req'
+          type: 'httpTrigger'
+          direction: 'In'
+          authLevel: 'Anonymous'
+          methods: [
+            'post'
+          ]
+        }
+        {
+          name: '$return'
+          type: 'http'
+          direction: 'Out'
+        }
+      ]
+    }
+    invoke_url_template: 'https://structuredstreamreader-dev.azurewebsites.net/api/getstructuredstreamcontent'
+    language: 'dotnet-isolated'
+    isDisabled: false
+  }
+}
+
+resource sites_CosmanAISearchIngestion_Dev_name_sites_CosmanAISearchIngestion_Dev_name_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_CosmanAISearchIngestion_Dev_name_resource
+  name: '${sites_CosmanAISearchIngestion_Dev_name}.azurewebsites.net'
+  location: 'West US 3'
+  properties: {
+    siteName: 'CosmanAISearchIngestion-Dev'
+    hostNameType: 'Verified'
+  }
+}
+
+resource sites_cosmanapi_dev_name_sites_cosmanapi_dev_name_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_cosmanapi_dev_name_resource
+  name: '${sites_cosmanapi_dev_name}.azurewebsites.net'
+  location: 'West US 3'
+  properties: {
+    siteName: 'cosmanapi-dev'
+    hostNameType: 'Verified'
+  }
+}
+
+resource sites_cosmanapieu_dev_name_sites_cosmanapieu_dev_name_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_cosmanapieu_dev_name_resource
+  name: '${sites_cosmanapieu_dev_name}.azurewebsites.net'
+  location: 'North Europe'
+  properties: {
+    siteName: 'cosmanapieu-dev'
+    hostNameType: 'Verified'
+  }
+}
+
+resource sites_cosmancoldstorageapi_dev_name_sites_cosmancoldstorageapi_dev_name_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_cosmancoldstorageapi_dev_name_resource
+  name: '${sites_cosmancoldstorageapi_dev_name}.azurewebsites.net'
+  location: 'West US 2'
+  properties: {
+    siteName: 'cosmancoldstorageapi-dev'
+    hostNameType: 'Verified'
+  }
+}
+
+resource sites_cosman_dev_name_sites_cosman_dev_name_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: '${sites_cosman_dev_name}.azurewebsites.net'
+  location: 'West US 3'
+  properties: {
+    siteName: 'cosman-dev'
+    hostNameType: 'Verified'
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_sites_IntegratedOptimizationPlatform_Dev_name_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_resource
+  name: '${sites_IntegratedOptimizationPlatform_Dev_name}.azurewebsites.net'
+  location: 'West US 2'
+  properties: {
+    siteName: 'IntegratedOptimizationPlatform-Dev'
+    hostNameType: 'Verified'
+  }
+}
+
+resource sites_IntegratedOptimizationPlatformExecutors_dev_name_sites_IntegratedOptimizationPlatformExecutors_dev_name_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatformExecutors_dev_name_resource
+  name: '${sites_IntegratedOptimizationPlatformExecutors_dev_name}.azurewebsites.net'
+  location: 'West US 3'
+  properties: {
+    siteName: 'IntegratedOptimizationPlatformExecutors-dev'
+    hostNameType: 'Verified'
+  }
+}
+
+resource sites_cosman_dev_name_m365telemetry_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_cosman_dev_name_resource
+  name: 'm365telemetry.net'
+  location: 'West US 3'
+  properties: {
+    siteName: 'cosman-dev'
+    hostNameType: 'Verified'
+    sslState: 'SniEnabled'
+    thumbprint: 'C0CF3B7894AC55CA44EC6113806DC11285B2FADF'
+  }
+}
+
+resource sites_OCE_Email_Assistance_LogicApp_Dev_name_sites_OCE_Email_Assistance_LogicApp_Dev_name_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_OCE_Email_Assistance_LogicApp_Dev_name_resource
+  name: '${sites_OCE_Email_Assistance_LogicApp_Dev_name}.azurewebsites.net'
+  location: 'West US 3'
+  properties: {
+    siteName: 'OCE-Email-Assistance-LogicApp-Dev'
+    hostNameType: 'Verified'
+  }
+}
+
+resource sites_PassiveMonitoringEventsAdvisor_dev_name_sites_PassiveMonitoringEventsAdvisor_dev_name_aehjazhca4gca4ga_westus3_01_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_PassiveMonitoringEventsAdvisor_dev_name_resource
+  name: '${sites_PassiveMonitoringEventsAdvisor_dev_name}-aehjazhca4gca4ga.westus3-01.azurewebsites.net'
+  location: 'West US 3'
+  properties: {
+    siteName: 'PassiveMonitoringEventsAdvisor-dev'
+    hostNameType: 'Verified'
+  }
+}
+
+resource sites_PeriodicChecker_dev_name_sites_PeriodicChecker_dev_name_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_PeriodicChecker_dev_name_resource
+  name: '${sites_PeriodicChecker_dev_name}.azurewebsites.net'
+  location: 'West US 3'
+  properties: {
+    siteName: 'PeriodicChecker-dev'
+    hostNameType: 'Verified'
+  }
+}
+
+resource sites_StorageMonitorAndReport_dev_name_sites_StorageMonitorAndReport_dev_name_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_StorageMonitorAndReport_dev_name_resource
+  name: '${sites_StorageMonitorAndReport_dev_name}.azurewebsites.net'
+  location: 'West US 3'
+  properties: {
+    siteName: 'StorageMonitorAndReport-dev'
+    hostNameType: 'Verified'
+  }
+}
+
+resource sites_StructuredStreamReader_dev_name_sites_StructuredStreamReader_dev_name_azurewebsites_net 'Microsoft.Web/sites/hostNameBindings@2024-04-01' = {
+  parent: sites_StructuredStreamReader_dev_name_resource
+  name: '${sites_StructuredStreamReader_dev_name}.azurewebsites.net'
+  location: 'North Europe'
+  properties: {
+    siteName: 'StructuredStreamReader-dev'
+    hostNameType: 'Verified'
+  }
+}
+
+resource sites_StructuredStreamReader_dev_name_c79620da_15bb_4938_94ee_887274013f75_default 'Microsoft.Web/sites/virtualNetworkConnections@2024-04-01' = {
+  parent: sites_StructuredStreamReader_dev_name_resource
+  name: 'c79620da-15bb-4938-94ee-887274013f75_default'
+  location: 'North Europe'
+  properties: {
+    vnetResourceId: '${virtualNetworks_CosmanNonProdVnetNeu_externalid}/subnets/default'
+    isSwift: true
+  }
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_parallel_Listen 'Microsoft.EventHub/namespaces/eventhubs/authorizationrules@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_parallel
+  name: 'Listen'
+  location: 'westus2'
+  properties: {
+    rights: [
+      'Listen'
+    ]
+  }
+  dependsOn: [
+    namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_parallel_PreviewDataPolicy 'Microsoft.EventHub/namespaces/eventhubs/authorizationrules@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_parallel
+  name: 'PreviewDataPolicy'
+  location: 'westus2'
+  properties: {
+    rights: [
+      'Listen'
+    ]
+  }
+  dependsOn: [
+    namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_serial_PreviewDataPolicy 'Microsoft.EventHub/namespaces/eventhubs/authorizationrules@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_serial
+  name: 'PreviewDataPolicy'
+  location: 'westus2'
+  properties: {
+    rights: [
+      'Listen'
+    ]
+  }
+  dependsOn: [
+    namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_other_Default 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_other
+  name: '$Default'
+  location: 'westus2'
+  properties: {}
+  dependsOn: [
+    namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_parallel_Default 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_parallel
+  name: '$Default'
+  location: 'westus2'
+  properties: {}
+  dependsOn: [
+    namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_serial_Default 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_serial
+  name: '$Default'
+  location: 'westus2'
+  properties: {}
+  dependsOn: [
+    namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_parallel_preview_data_consumer_group 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_parallel
+  name: 'preview_data_consumer_group'
+  location: 'westus2'
+  properties: {}
+  dependsOn: [
+    namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource namespaces_IntegratedOptimizationPlatform_Dev_name_serial_preview_data_consumer_group 'Microsoft.EventHub/namespaces/eventhubs/consumergroups@2024-05-01-preview' = {
+  parent: namespaces_IntegratedOptimizationPlatform_Dev_name_serial
+  name: 'preview_data_consumer_group'
+  location: 'westus2'
+  properties: {}
+  dependsOn: [
+    namespaces_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource privateDnsZones_privatelink_blob_core_windows_net_name_4jmhn3kgaxnhm 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = {
+  parent: privateDnsZones_privatelink_blob_core_windows_net_name_resource
+  name: '4jmhn3kgaxnhm'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: virtualNetworks_CosmanNonProdVnetWus3_name_resource.id
+    }
+  }
+}
+
+resource privateDnsZones_privatelink_file_core_windows_net_name_4jmhn3kgaxnhm 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = {
+  parent: privateDnsZones_privatelink_file_core_windows_net_name_resource
+  name: '4jmhn3kgaxnhm'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: virtualNetworks_CosmanNonProdVnetWus3_name_resource.id
+    }
+  }
+}
+
+resource privateEndpoints_storage_account_wus3_blob_name_default 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = {
+  name: '${privateEndpoints_storage_account_wus3_blob_name}/default'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'privatelink-blob-core-windows-net'
+        properties: {
+          privateDnsZoneId: privateDnsZones_privatelink_blob_core_windows_net_name_resource.id
+        }
+      }
+    ]
+  }
+  dependsOn: [
+    privateEndpoints_storage_account_wus3_blob_name_resource
+  ]
+}
+
+resource privateEndpoints_storage_account_wus3_blob2_name_default 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = {
+  name: '${privateEndpoints_storage_account_wus3_blob2_name}/default'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'privatelink-blob-core-windows-net'
+        properties: {
+          privateDnsZoneId: privateDnsZones_privatelink_blob_core_windows_net_name_resource.id
+        }
+      }
+    ]
+  }
+  dependsOn: [
+    privateEndpoints_storage_account_wus3_blob2_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_resource 'Microsoft.Storage/storageAccounts@2024-01-01' = {
+  name: storageAccounts_cosmanwebrgdevwestus3_name
+  location: 'westus3'
+  tags: {
+    Owner: 'CosmanDev'
+  }
+  sku: {
+    name: 'Standard_RAGRS'
+    tier: 'Standard'
+  }
+  kind: 'StorageV2'
+  properties: {
+    dnsEndpointType: 'Standard'
+    defaultToOAuthAuthentication: false
+    publicNetworkAccess: 'Enabled'
+    allowCrossTenantReplication: false
+    minimumTlsVersion: 'TLS1_2'
+    allowBlobPublicAccess: false
+    allowSharedKeyAccess: false
+    networkAcls: {
+      resourceAccessRules: []
+      bypass: 'AzureServices'
+      virtualNetworkRules: [
+        {
+          id: virtualNetworks_CosmanNonProdVnetWus3_name_default2.id
+          action: 'Allow'
+          state: 'Succeeded'
+        }
+        {
+          id: virtualNetworks_CosmanNonProdVnetWus3_name_default4.id
+          action: 'Allow'
+          state: 'Succeeded'
+        }
+      ]
+      ipRules: []
+      defaultAction: 'Deny'
+    }
+    supportsHttpsTrafficOnly: true
+    encryption: {
+      requireInfrastructureEncryption: false
+      services: {
+        file: {
+          keyType: 'Account'
+          enabled: true
+        }
+        blob: {
+          keyType: 'Account'
+          enabled: true
+        }
+      }
+      keySource: 'Microsoft.Storage'
+    }
+    accessTier: 'Hot'
+  }
+}
+
+resource storageAccounts_testforshenghao_name_default_adf_files 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+  parent: storageAccounts_testforshenghao_name_default
+  name: 'adf-files'
+  properties: {
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
+    defaultEncryptionScope: '$account-encryption-key'
+    denyEncryptionScopeOverride: false
+    publicAccess: 'None'
+  }
+  dependsOn: [
+    storageAccounts_testforshenghao_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_azure_webjobs_eventhub 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+  parent: storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'azure-webjobs-eventhub'
+  properties: {
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
+    defaultEncryptionScope: '$account-encryption-key'
+    denyEncryptionScopeOverride: false
+    publicAccess: 'None'
+  }
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_azure_webjobs_hosts 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+  parent: storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'azure-webjobs-hosts'
+  properties: {
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
+    defaultEncryptionScope: '$account-encryption-key'
+    denyEncryptionScopeOverride: false
+    publicAccess: 'None'
+  }
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_testforshenghao_name_default_azure_webjobs_hosts 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+  parent: storageAccounts_testforshenghao_name_default
+  name: 'azure-webjobs-hosts'
+  properties: {
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
+    defaultEncryptionScope: '$account-encryption-key'
+    denyEncryptionScopeOverride: false
+    publicAccess: 'None'
+  }
+  dependsOn: [
+    storageAccounts_testforshenghao_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_azure_webjobs_secrets 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+  parent: storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'azure-webjobs-secrets'
+  properties: {
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
+    defaultEncryptionScope: '$account-encryption-key'
+    denyEncryptionScopeOverride: false
+    publicAccess: 'None'
+  }
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_testforshenghao_name_default_azure_webjobs_secrets 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+  parent: storageAccounts_testforshenghao_name_default
+  name: 'azure-webjobs-secrets'
+  properties: {
+    immutableStorageWithVersioning: {
+      enabled: false
+    }
+    defaultEncryptionScope: '$account-encryption-key'
+    denyEncryptionScopeOverride: false
+    publicAccess: 'None'
+  }
+  dependsOn: [
+    storageAccounts_testforshenghao_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_cosmanaisearchingestion_deva102 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_fileServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'cosmanaisearchingestion-deva102'
+  properties: {
+    accessTier: 'TransactionOptimized'
+    shareQuota: 102400
+    enabledProtocols: 'SMB'
+  }
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_cosmanaisearchingestion_devb4ff 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_fileServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'cosmanaisearchingestion-devb4ff'
+  properties: {
+    accessTier: 'TransactionOptimized'
+    shareQuota: 102400
+    enabledProtocols: 'SMB'
+  }
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_integratedoptimizationplatformexecutors_dev9e67 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_fileServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'integratedoptimizationplatformexecutors-dev9e67'
+  properties: {
+    accessTier: 'TransactionOptimized'
+    shareQuota: 102400
+    enabledProtocols: 'SMB'
+  }
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_oce_email_assistance_logicapp_devb467 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_fileServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'oce-email-assistance-logicapp-devb467'
+  properties: {
+    accessTier: 'TransactionOptimized'
+    shareQuota: 102400
+    enabledProtocols: 'SMB'
+  }
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_periodicchecker_devb6fe 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_fileServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'periodicchecker-devb6fe'
+  properties: {
+    accessTier: 'TransactionOptimized'
+    shareQuota: 102400
+    enabledProtocols: 'SMB'
+  }
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_testforshenghao_name_default_testbyshenghaoliu2ba93 'Microsoft.Storage/storageAccounts/fileServices/shares@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_fileServices_storageAccounts_testforshenghao_name_default
+  name: 'testbyshenghaoliu2ba93'
+  properties: {
+    accessTier: 'TransactionOptimized'
+    shareQuota: 102400
+    enabledProtocols: 'SMB'
+  }
+  dependsOn: [
+    storageAccounts_testforshenghao_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_flow392b456f6c33111jobtriggers00 'Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_queueServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'flow392b456f6c33111jobtriggers00'
+  properties: {
+    metadata: {}
+  }
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_yushhetest 'Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_queueServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'yushhetest'
+  properties: {
+    metadata: {}
+  }
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_testforshenghao_name_default_AzureFunctionsDiagnosticEvents202406 'Microsoft.Storage/storageAccounts/tableServices/tables@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_tableServices_storageAccounts_testforshenghao_name_default
+  name: 'AzureFunctionsDiagnosticEvents202406'
+  properties: {}
+  dependsOn: [
+    storageAccounts_testforshenghao_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_AzureFunctionsDiagnosticEvents202412 'Microsoft.Storage/storageAccounts/tableServices/tables@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_tableServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'AzureFunctionsDiagnosticEvents202412'
+  properties: {}
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_AzureFunctionsScaleMetrics202412 'Microsoft.Storage/storageAccounts/tableServices/tables@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_tableServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'AzureFunctionsScaleMetrics202412'
+  properties: {}
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_flow392b456f6c3311154ef3e1e1cb6317flows 'Microsoft.Storage/storageAccounts/tableServices/tables@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_tableServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'flow392b456f6c3311154ef3e1e1cb6317flows'
+  properties: {}
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_flow392b456f6c33111flowaccesskeys 'Microsoft.Storage/storageAccounts/tableServices/tables@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_tableServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'flow392b456f6c33111flowaccesskeys'
+  properties: {}
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_flow392b456f6c33111flowruntimecontext 'Microsoft.Storage/storageAccounts/tableServices/tables@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_tableServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'flow392b456f6c33111flowruntimecontext'
+  properties: {}
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_flow392b456f6c33111flows 'Microsoft.Storage/storageAccounts/tableServices/tables@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_tableServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'flow392b456f6c33111flows'
+  properties: {}
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_flow392b456f6c33111flowsubscriptions 'Microsoft.Storage/storageAccounts/tableServices/tables@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_tableServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'flow392b456f6c33111flowsubscriptions'
+  properties: {}
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_flow392b456f6c33111flowsubscriptionsummary 'Microsoft.Storage/storageAccounts/tableServices/tables@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_tableServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'flow392b456f6c33111flowsubscriptionsummary'
+  properties: {}
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource storageAccounts_cosmanwebrgdevwestus3_name_default_flow392b456f6c33111jobdefinitions 'Microsoft.Storage/storageAccounts/tableServices/tables@2024-01-01' = {
+  parent: Microsoft_Storage_storageAccounts_tableServices_storageAccounts_cosmanwebrgdevwestus3_name_default
+  name: 'flow392b456f6c33111jobdefinitions'
+  properties: {}
+  dependsOn: [
+    storageAccounts_cosmanwebrgdevwestus3_name_resource
+  ]
+}
+
+resource sites_OCE_Email_Assistance_LogicApp_Dev_name_resource 'Microsoft.Web/sites@2024-04-01' = {
+  name: sites_OCE_Email_Assistance_LogicApp_Dev_name
+  location: 'West US 3'
+  kind: 'functionapp,workflowapp'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: 'oce-email-assistance-logicapp-dev.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: 'oce-email-assistance-logicapp-dev.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_cosmanwebrgdev_9c46_name_resource.id
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: true
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: true
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: false
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: false
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 1536
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    virtualNetworkSubnetId: virtualNetworks_CosmanNonProdVnetWus3_name_default2.id
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_staging 'Microsoft.Web/sites/slots@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_resource
+  name: 'staging'
+  location: 'West US 2'
+  kind: 'app'
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    enabled: true
+    hostNameSslStates: [
+      {
+        name: 'integratedoptimizationplatform-dev-staging.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Standard'
+      }
+      {
+        name: 'integratedoptimizationplatform-dev-staging.scm.azurewebsites.net'
+        sslState: 'Disabled'
+        hostType: 'Repository'
+      }
+    ]
+    serverFarmId: serverfarms_ASP_cosmanwebrg_IOEPlan_name_resource.id
+    reserved: false
+    isXenon: false
+    hyperV: false
+    dnsConfiguration: {}
+    vnetRouteAllEnabled: false
+    vnetImagePullEnabled: false
+    vnetContentShareEnabled: false
+    siteConfig: {
+      numberOfWorkers: 1
+      acrUseManagedIdentityCreds: false
+      alwaysOn: true
+      http20Enabled: false
+      functionAppScaleLimit: 0
+      minimumElasticInstanceCount: 1
+    }
+    scmSiteAlsoStopped: false
+    clientAffinityEnabled: true
+    clientCertEnabled: false
+    clientCertMode: 'Required'
+    hostNamesDisabled: false
+    ipMode: 'IPv4'
+    vnetBackupRestoreEnabled: false
+    customDomainVerificationId: '4FB0A857C864506B9FB6EEAEEE9A9D17AE4AEE6D7C9FA508DBD9831214E7AB79'
+    containerSize: 0
+    dailyMemoryTimeQuota: 0
+    httpsOnly: true
+    endToEndEncryptionEnabled: false
+    redundancyMode: 'None'
+    publicNetworkAccess: 'Enabled'
+    storageAccountRequired: false
+    keyVaultReferenceIdentity: 'SystemAssigned'
+  }
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_staging_ftp 'Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_staging
+  name: 'ftp'
+  location: 'West US 2'
+  properties: {
+    allow: false
+  }
+  dependsOn: [
+    sites_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_staging_scm 'Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_staging
+  name: 'scm'
+  location: 'West US 2'
+  properties: {
+    allow: false
+  }
+  dependsOn: [
+    sites_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_staging_web 'Microsoft.Web/sites/slots/config@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_staging
+  name: 'web'
+  location: 'West US 2'
+  properties: {
+    numberOfWorkers: 1
+    defaultDocuments: [
+      'Default.htm'
+      'Default.html'
+      'Default.asp'
+      'index.htm'
+      'index.html'
+      'iisstart.htm'
+      'default.aspx'
+      'index.php'
+      'hostingstart.html'
+    ]
+    netFrameworkVersion: 'v6.0'
+    requestTracingEnabled: false
+    remoteDebuggingEnabled: false
+    httpLoggingEnabled: false
+    acrUseManagedIdentityCreds: false
+    logsDirectorySizeLimit: 35
+    detailedErrorLoggingEnabled: false
+    publishingUsername: 'REDACTED'
+    scmType: 'VSTSRM'
+    use32BitWorkerProcess: false
+    webSocketsEnabled: false
+    alwaysOn: true
+    managedPipelineMode: 'Integrated'
+    virtualApplications: [
+      {
+        virtualPath: '/'
+        physicalPath: 'site\\wwwroot'
+        preloadEnabled: true
+      }
+    ]
+    loadBalancing: 'LeastRequests'
+    experiments: {
+      rampUpRules: []
+    }
+    autoHealEnabled: false
+    vnetRouteAllEnabled: false
+    vnetPrivatePortsCount: 0
+    publicNetworkAccess: 'Enabled'
+    cors: {
+      allowedOrigins: [
+        '*'
+      ]
+      supportCredentials: false
+    }
+    localMySqlEnabled: false
+    managedServiceIdentityId: 44914
+    ipSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Allow'
+        priority: 2147483647
+        name: 'Allow all'
+        description: 'Allow all access'
+      }
+    ]
+    scmIpSecurityRestrictions: [
+      {
+        ipAddress: 'Any'
+        action: 'Allow'
+        priority: 2147483647
+        name: 'Allow all'
+        description: 'Allow all access'
+      }
+    ]
+    scmIpSecurityRestrictionsUseMain: false
+    http20Enabled: false
+    minTlsVersion: '1.2'
+    scmMinTlsVersion: '1.2'
+    ftpsState: 'FtpsOnly'
+    preWarmedInstanceCount: 0
+    elasticWebAppScaleLimit: 0
+    functionsRuntimeScaleMonitoringEnabled: false
+    minimumElasticInstanceCount: 1
+    azureStorageAccounts: {}
+  }
+  dependsOn: [
+    sites_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_staging_208985271725351627577 'Microsoft.Web/sites/slots/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_staging
+  name: '208985271725351627577'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author: 'vitawang'
+    deployer: 'VSTS'
+    message: '{"type":"SlotSwap","commitId":"2ba2cd02e13fe4808816c79ebff445d0dc2c405b","buildId":"20898527","buildNumber":"20240903.2","repoProvider":"TfsGit","repoName":"SOTELS","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","sourceSlot":"staging","targetSlot":"production"}'
+    start_time: '2024-09-03T08:20:30.4118744Z'
+    end_time: '2024-09-03T08:20:30.4118744Z'
+    active: false
+  }
+  dependsOn: [
+    sites_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_staging_4a087449514b417c827d1bd823a2d847 'Microsoft.Web/sites/slots/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_staging
+  name: '4a087449514b417c827d1bd823a2d847'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"2e3cd3b60c2ca2b7ab9b2d620db0ae134d4f2b75","buildId":"19014615","releaseId":"2685379","buildNumber":"v1.0.4040.0","releaseName":"Release-158","repoProvider":"TfsGit","repoName":"SOTELS","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2024-05-23T06:43:46.853805Z'
+    end_time: '2024-05-23T06:43:47.0413109Z'
+    active: false
+  }
+  dependsOn: [
+    sites_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_staging_5234dc775bb04f8c905c0916ef0ea001 'Microsoft.Web/sites/slots/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_staging
+  name: '5234dc775bb04f8c905c0916ef0ea001'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"8baef20ca58dbbbc315b8550691604cb6c7cbf37","buildId":"20759016","releaseId":"2864556","buildNumber":"v1.0.5082.0","releaseName":"Release-185","repoProvider":"TfsGit","repoName":"SOTELS","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2024-08-26T04:25:38.2948396Z'
+    end_time: '2024-08-26T04:25:38.4823444Z'
+    active: true
+  }
+  dependsOn: [
+    sites_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_staging_8d0dafa86d30418481552431b3ab500e 'Microsoft.Web/sites/slots/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_staging
+  name: '8d0dafa86d30418481552431b3ab500e'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"568c4453d499bcfb0a4640cc1af4846273cd4fc3","buildId":"19011107","releaseId":"2684935","buildNumber":"v1.0.4033.0","releaseName":"Release-157","repoProvider":"TfsGit","repoName":"SOTELS","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2024-05-23T03:01:15.2430659Z'
+    end_time: '2024-05-23T03:01:15.4794229Z'
+    active: false
+  }
+  dependsOn: [
+    sites_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_staging_a4a796b2c1564069ac2e9471281cdc11 'Microsoft.Web/sites/slots/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_staging
+  name: 'a4a796b2c1564069ac2e9471281cdc11'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"383bab9a260adad5fc496ad2968aa8ce49f41c1c","buildId":"20479211","releaseId":"2834915","buildNumber":"v1.0.4920.0","releaseName":"Release-182","repoProvider":"TfsGit","repoName":"SOTELS","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2024-08-09T02:41:24.4024302Z'
+    end_time: '2024-08-09T02:41:24.5899313Z'
+    active: false
+  }
+  dependsOn: [
+    sites_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_staging_c3fe617c852a47769befae87c6061bc4 'Microsoft.Web/sites/slots/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_staging
+  name: 'c3fe617c852a47769befae87c6061bc4'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"568c4453d499bcfb0a4640cc1af4846273cd4fc3","buildId":"19011107","releaseId":"2684935","buildNumber":"v1.0.4033.0","releaseName":"Release-157","repoProvider":"TfsGit","repoName":"SOTELS","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2024-05-23T04:54:50.5763339Z'
+    end_time: '2024-05-23T04:54:50.7325842Z'
+    active: false
+  }
+  dependsOn: [
+    sites_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_staging_f79d61dde1b7468a9f912f56ce7f71a9 'Microsoft.Web/sites/slots/deployments@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_staging
+  name: 'f79d61dde1b7468a9f912f56ce7f71a9'
+  location: 'West US 2'
+  properties: {
+    status: 4
+    author_email: 'N/A'
+    author: 'N/A'
+    deployer: 'VSTS'
+    message: '{"type":"deployment","commitId":"3c1218f71e91b9064fa37ce3bb4f10422c1d09ea","buildId":"19742984","releaseId":"2759723","buildNumber":"v1.0.4485.0","releaseName":"Release-168","repoProvider":"TfsGit","repoName":"SOTELS","collectionUrl":"https://o365exchange.visualstudio.com/","teamProject":"959adb23-f323-4d52-8203-ff34e5cbeefa","buildProjectUrl":"https://o365exchange.visualstudio.com/959adb23-f323-4d52-8203-ff34e5cbeefa","repositoryUrl":"","branch":"master","teamProjectName":"O365 Core","slotName":"production"}'
+    start_time: '2024-07-01T04:51:52.624113Z'
+    end_time: '2024-07-01T04:51:52.9366184Z'
+    active: false
+  }
+  dependsOn: [
+    sites_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource sites_IntegratedOptimizationPlatform_Dev_name_staging_sites_IntegratedOptimizationPlatform_Dev_name_staging_azurewebsites_net 'Microsoft.Web/sites/slots/hostNameBindings@2024-04-01' = {
+  parent: sites_IntegratedOptimizationPlatform_Dev_name_staging
+  name: '${sites_IntegratedOptimizationPlatform_Dev_name}-staging.azurewebsites.net'
+  location: 'West US 2'
+  properties: {
+    siteName: 'integratedoptimizationplatform-dev(staging)'
+    hostNameType: 'Verified'
+  }
+  dependsOn: [
+    sites_IntegratedOptimizationPlatform_Dev_name_resource
+  ]
+}
+
+resource sites_OCE_Email_Assistance_LogicApp_Dev_name_cc1b619b_96ad_4166_929b_06674226add6_default2 'Microsoft.Web/sites/virtualNetworkConnections@2024-04-01' = {
+  parent: sites_OCE_Email_Assistance_LogicApp_Dev_name_resource
+  name: 'cc1b619b-96ad-4166-929b-06674226add6_default2'
+  location: 'West US 3'
+  properties: {
+    vnetResourceId: virtualNetworks_CosmanNonProdVnetWus3_name_default2.id
+    isSwift: true
+  }
+}

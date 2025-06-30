@@ -1,0 +1,123 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_cosman_dev_name": {
+            "value": null
+        },
+        "sites_cosmanapi_dev_name": {
+            "value": null
+        },
+        "sites_cosmanapieu_dev_name": {
+            "value": null
+        },
+        "sites_PeriodicChecker_dev_name": {
+            "value": null
+        },
+        "sites_cosmancoldstorageapi_dev_name": {
+            "value": null
+        },
+        "sites_StructuredStreamReader_dev_name": {
+            "value": null
+        },
+        "sites_CosmanAISearchIngestion_Dev_name": {
+            "value": null
+        },
+        "sites_StorageMonitorAndReport_dev_name": {
+            "value": null
+        },
+        "workflows_OCE_Assistant_Dev_Test_name": {
+            "value": null
+        },
+        "searchServices_cosman_ai_search_name": {
+            "value": null
+        },
+        "storageAccounts_testforshenghao_name": {
+            "value": null
+        },
+        "serverfarms_ASP_cosmanwebrgdev_8022_name": {
+            "value": null
+        },
+        "serverfarms_ASP_cosmanwebrgdev_83b4_name": {
+            "value": null
+        },
+        "serverfarms_ASP_cosmanwebrgdev_9c46_name": {
+            "value": null
+        },
+        "serverfarms_ASP_cosmanwebrgdev_bfb0_name": {
+            "value": null
+        },
+        "serverfarms_ASP_cosmanwebrg_IOEPlan_name": {
+            "value": null
+        },
+        "serverfarms_ASP_VcMonitor_staging_af11_name": {
+            "value": null
+        },
+        "sites_OCE_Email_Assistance_LogicApp_Dev_name": {
+            "value": null
+        },
+        "sites_IntegratedOptimizationPlatform_Dev_name": {
+            "value": null
+        },
+        "sites_PassiveMonitoringEventsAdvisor_dev_name": {
+            "value": null
+        },
+        "virtualNetworks_CosmanNonProdVnetWus3_name": {
+            "value": null
+        },
+        "storageAccounts_cosmanwebrgdevwestus3_name": {
+            "value": null
+        },
+        "certificates_m365telemetry_net_cosman_dev_name": {
+            "value": null
+        },
+        "privateEndpoints_storage_account_wus3_blob_name": {
+            "value": null
+        },
+        "privateEndpoints_storage_account_wus3_blob2_name": {
+            "value": null
+        },
+        "sites_IntegratedOptimizationPlatformExecutors_dev_name": {
+            "value": null
+        },
+        "namespaces_IntegratedOptimizationPlatform_Dev_name": {
+            "value": null
+        },
+        "components_PassiveMonitoringEventsAdvisor_dev_name": {
+            "value": null
+        },
+        "privateDnsZones_privatelink_blob_core_windows_net_name": {
+            "value": null
+        },
+        "privateDnsZones_privatelink_file_core_windows_net_name": {
+            "value": null
+        },
+        "smartdetectoralertrules_failure_anomalies___cosmanapieu_dev_name": {
+            "value": null
+        },
+        "smartdetectoralertrules_failure_anomalies___passivemonitoringeventsadvisor_dev_name": {
+            "value": null
+        },
+        "components_cosmanapieu_dev_externalid": {
+            "value": null
+        },
+        "actiongroups_application_insights_smart_detection_externalid": {
+            "value": null
+        },
+        "workspaces_DefaultWorkspace_595c82ed_d6b5_44fb_827a_5a55fe86dd4e_USW3_externalid": {
+            "value": null
+        },
+        "storageAccounts_cosmanwebrgstagingwus3_externalid": {
+            "value": null
+        },
+        "networkSecurityGroups_NSG_CosmanNonProd_Wus3_externalid": {
+            "value": null
+        },
+        "serverfarms_ASP_ColdStorage_nonProd_externalid": {
+            "value": null
+        },
+        "virtualNetworks_CosmanNonProdVnetNeu_externalid": {
+            "value": null
+        }
+    }
+}
