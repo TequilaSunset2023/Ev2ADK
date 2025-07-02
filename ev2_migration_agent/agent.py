@@ -32,6 +32,7 @@ from ev2_migration_agent.tools.ev2_tools import (
 from ev2_migration_agent.tools.common_file_tools import (
     read_file,
     update_file,
+    create_file,
     list_directory_contents
 )
 
@@ -172,10 +173,11 @@ generate_arm_template_agent = LlmAgent(
         f"""
         You are a helpful assistant who generate ARM template for a specific resource type by calling a tool.
         The bicep file path here: {{bicep_for_specific_resource_file_path}}
-        Output path is {os.getenv("EV2_TARGET_FOLDER", "")}
+        Output path is {os.getenv("EV2_TARGET_TEMPLATE_FOLDER", "")}
+        The example output file name is like `SQLServer.template.json`.
         
         If the tool build the ARM template successfully, you can just finish your task.
-        If the tool fails to build the ARM template, you will need to fix the bicep file content and call the tool again until the tool succeeds.
+        If the tool fails to build the ARM template, you will need to fix the bicep file content automatically and call the tool again automatically until the tool succeeds.
         """
     ),
     tools=[
@@ -197,34 +199,43 @@ coding_agent = Agent(
     code_executor=BuiltInCodeExecutor(),
 )
 
-def build_instruction(
+async def build_instruction(
       readonly_context: ReadonlyContext,
   ) -> str:
     return (f"""
         You are a helpful assistant who generate rollout for a specific resource type based on a all in one bicep file.
         Output path is {os.getenv("EV2_TARGET_FOLDER", "")}
+        We already have arm template for the specific resource type, you will use it to generate rollout. You can find it here: {os.getenv("EV2_TARGET_TEMPLATE_FOLDER", "")}
+        Make sure you use "create_file" tool to generate the service model, rolloutSpec, and create the configs and scopeBindings accordingly.
 
         """ +
+        await instructions_utils.inject_session_state(
+            "Source bicep file path and focused resource type: {source_bicep_file_path_and_resource_type}",
+            readonly_context,
+        ) +
+        f"""
+        environment should be : {os.getenv("ENVIROMENT", "")}
+        subscriptionKey: {os.getenv("SUBSCRIPTION_KEY", "")}
+        rolloutName: {os.getenv("ROLLOUT_NAME", "")}
+        """ +
 """
-To start, you will need the user to provide (or find in context):
+To start, you will find in context:
 - bicepFile: The ORIGINAL bicep file to be processed.
-- resourceNames: The resources from {bicepFile} to be included in the rollout. You will list all the resources in the bicep file and ask user to select one or more resources.
-- rolloutName: The name for the new rollout. You will suggest a name based on the selected resources and ask user to confirm the name. It is the folder and file name for the rollout.
+- resourceNames: The resources from {bicepFile} to be included in the rollout. But only focus on the resource type you are generating rollout for.
+- rolloutName: The name for the new rollout. You will use a proper name based on the selected resources. It is the folder and file name for the rollout.
 - rolloutPath: The path to the rollout folder, relative to the artifact root folder. It is usually `rollouts/{environment}/{rolloutName}`.
-- subscriptionKey: The subscription key (registered before this step by user) wherethe resources will be deployed. You will ask user to provide the subscription key.
+- subscriptionKey: The subscription key (registered before this step by user) wherethe resources will be deployed.
 - ev2MigrationSettings: The settings for the Ev2 migration, such as the target folder in the MCP server.
 
 You will infer the configs and scope bindings from the user-provided information and below examples and descriptions.
 
 A rollout defines instances of the bicep templates, thus you have to generate based on both templates and parameters. Parameters can be find in the original bicep file.
 
-Generate a digest of the original bicep first, then list all the resources (by name) in the bicep file, ask user to select one or more resources to generate rollouts for.
-
 Because one resource can be used in multiple rollouts, the parameters used in one rollout should refer to the ScopeBindings.
 
 The parameters are eventually saved in the configs. Then refered by scopeBindings. The scope bindings (variables prefixed and suffixed with `__`) are used in the parameters. This is because we want to use one scopeBindings across multiple environments.
 
-To create a rollout, you will need user to describe the rollout, then you suggest the name, ask for resources to be included, and then generate the service model, rolloutSpec, and update the configs and scopeBindings accordingly.
+To create a rollout, you will need call "create_file" tool to generate the service model, rolloutSpec, and create the configs and scopeBindings accordingly.
 
 ## Output folder structure & file examples
 
@@ -242,11 +253,11 @@ The output folder structure should look like this:
 │   ├── ResourceConfigfile.Dev.json
 │   └── ResourceConfigfile.Staging.json
 ├── templates
-│   ├── KustoCluster.bicep
-│   ├── SQLServer.bicep
-│   ├── StorageAccount.bicep
-│   ├── VirtualNetwork.bicep
-|   ├── ManagedIdentity.bicep
+│   ├── KustoCluster.template.json
+│   ├── SQLServer.template.json
+│   ├── StorageAccount.template.json
+│   ├── VirtualNetwork.template.json
+|   ├── ManagedIdentity.template.json
 │   └── KustoCluster.template.json
 ├── rollouts
 │   ├── Dev
@@ -276,8 +287,8 @@ The contextual relations between these files are as follows:
 
 Here are the file examples for each type you might need:
 - Service identifier: A GUID that uniquely identifies the service, registered in the Service Tree.
-- Subscription Key: A string that identifies the subscription where the resources will be deployed. Ask user to provide the subscription key.
-- Environment: Identifier in Ev2, either "Prod" or "Test". Ev2 uses this to determine which tenant to used/not to use. Ask user to provide environment name.
+- Subscription Key: A string that identifies the subscription where the resources will be deployed.
+- Environment: Ev2 uses this to determine which tenant to used/not to use.
 
 Example parameter file:
 ```json
@@ -434,6 +445,7 @@ rollout_generate_agent = LlmAgent(
         get_ev2_migration_settings,
         read_file,
         update_file,
+        create_file,
         list_directory_contents,
         AgentTool(agent=coding_agent)
     ],

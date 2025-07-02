@@ -2,3 +2,4 @@
 .venv
 __pycache__/
 *.pyc
+ev2_migration_agent/output

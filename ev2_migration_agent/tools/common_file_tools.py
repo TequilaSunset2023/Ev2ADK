@@ -20,9 +20,15 @@ def read_file(file_path: str) -> str:
     """
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
-            return file.read()
+            return {
+                'success': True,
+                'content': file.read()
+            }
     except FileNotFoundError:
-        raise FileNotFoundError(f"File not found: {file_path}")
+            return {
+                'success': False,
+                'message': "File not found: " + file_path
+            }
     except Exception as e:
         raise IOError(f"Error reading file {file_path}: {str(e)}")
     
@@ -64,6 +70,41 @@ def update_file(file_path: str, content: str, backup: bool = True) -> bool:
         raise IOError(f"Error updating file {file_path}: {str(e)}")
 
 
+def create_file(file_path: str, content: str = "", overwrite: bool = False) -> bool:
+    """
+    Create a new file with the specified content.
+    
+    Args:
+        file_path (str): Path to the file to create
+        content (str): Content to write to the file (default: empty string)
+        overwrite (bool): Whether to overwrite if file already exists (default: False)
+        
+    Returns:
+        bool: True if the file was created successfully
+        
+    Raises:
+        FileExistsError: If the file already exists and overwrite is False
+        IOError: If there's an error creating the file
+    """
+    try:
+        # Check if file already exists
+        if os.path.exists(file_path) and not overwrite:
+            raise FileExistsError(f"File already exists: {file_path}")
+        
+        # Create directory if it doesn't exist
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        
+        # Create new file with content
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write(content)
+            
+        return True
+    except FileExistsError:
+        raise
+    except Exception as e:
+        raise IOError(f"Error creating file {file_path}: {str(e)}")
+
+
 def list_directory_contents(directory_path: str, recursive: bool = False) -> dict:
     """
     List all files and folders in a directory.
@@ -81,7 +122,8 @@ def list_directory_contents(directory_path: str, recursive: bool = False) -> dic
     """
     try:
         if not os.path.exists(directory_path):
-            raise FileNotFoundError(f"Directory not found: {directory_path}")
+            os.makedirs(os.path.dirname(directory_path), exist_ok=True)
+            return {}
         
         if not os.path.isdir(directory_path):
             raise IOError(f"Path is not a directory: {directory_path}")
